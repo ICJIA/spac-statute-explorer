@@ -8,12 +8,15 @@
           class="mt-5"
           ref="sql"
           label="Enter SQL"
-          hint="No inspiration? Try “select sqlite_version()”"
           outlined
         ></v-textarea>
-        <div class="text-right">
+        <div class="d-flex">
+          <v-btn class="mr-2" @click="listTables()">List all tables</v-btn>
+          <v-spacer></v-spacer>
           <v-btn class="mr-2" @click="reset()">Reset</v-btn>
-          <v-btn @click="execute()">Execute SQL</v-btn>
+          <v-btn @click="execute()" dark color="blue darken-4"
+            >Execute SQL</v-btn
+          >
         </div>
         <pre class="error mt-5" v-if="err">{{ err.toString() }}</pre>
 
@@ -23,7 +26,7 @@
             style="font-size: 12px"
             class="mr-10 mt-10 text-right"
           >
-            Time for query: {{ queryTime }}ms
+            Time for query: {{ queryTime }}ms / Items: {{ queryLength }}
           </div>
           <div id="results">
             <!--<div style="overflow: scroll; max-height: 500px" class="">
@@ -68,11 +71,18 @@ export default {
       columns: null,
       values: null,
       queryTime: null,
+      queryLength: null,
       loading: null,
     };
   },
 
   methods: {
+    listTables() {
+      this.sqlStatement = "select * from sqlite_master where type='table'";
+      this.loading = true;
+      this.fetchData();
+    },
+
     trim(val) {
       if (!val) return;
       return val.toString().replace(/^\s+|\s+$/g, "");
@@ -80,6 +90,7 @@ export default {
     reset() {
       this.sqlStatement = "select * from tbl_Statutes limit 15";
       this.res = null;
+      this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = "";
     },
@@ -94,8 +105,8 @@ export default {
         return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
       });
       console.log(columnNames);
-      const table = `<div style="overflow: scroll; max-height: 500px" class="">
-      <table style="font-size: 12px" border="1" class="mt-6">
+      const table = `<div style="overflow-y: auto; overflow-x: auto; max-height: 500px" >
+      <table style="font-size: 12px" border="1" class="mt-6 px-3">
       <thead>
         <tr>
          ${columnNames.join("")}
@@ -118,6 +129,7 @@ export default {
       this.fetchData();
     },
     async fetchData() {
+      this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = "Building results table ...";
       window.NProgress.start();
@@ -130,6 +142,7 @@ export default {
         this.res = res[0];
         this.columns = res[0].columns;
         this.values = res[0].values;
+        this.queryLength = res[0].values.length;
         this.loading = false;
         this.buildResultsTable();
       } catch (err) {
