@@ -1,8 +1,8 @@
 # spac-statute-explorer
 
-> Proof of concept simple test integrating Vue and https://sql.js.org
+> Proof of concept test integrating Vue and https://sql.js.org
 
-> Uses Webpack's [file-loader](https://v4.webpack.js.org/loaders/file-loader/) to load the Web Assembly (WASM) sqlite3 module, creating a new database, and then making a raw SQL query.
+> Uses Webpack's [file-loader](https://v4.webpack.js.org/loaders/file-loader/) to load the Web Assembly (WASM) sqlite3 module, creates a new database, and makes a raw SQL query. All client-side.
 
 ## Project setup
 
@@ -39,7 +39,7 @@ import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 ```
 
-### Create a new database in memory and make a simple query.
+### Create a new database in memory and make a simple query
 
 `views/Home.vue:`
 
