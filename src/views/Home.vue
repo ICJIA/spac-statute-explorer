@@ -111,7 +111,7 @@ export default {
     async fetchData() {
       this.err = null;
       const el = document.getElementById("results");
-      el.innerHTML = "Building results table ...";
+      el.innerHTML = `Building results table ...`;
       window.NProgress.start();
       const before = Date.now();
       try {
@@ -126,9 +126,11 @@ export default {
         const dataPromise = fetch(databasePath).then((res) =>
           res.arrayBuffer()
         );
+        console.log("db fetched");
         const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
         const db = new SQL.Database(new Uint8Array(buf));
         const res = await db.exec(this.sqlStatement);
+        console.log("db queried");
         const after = Date.now();
         this.queryTime = after - before;
         this.res = res[0];
