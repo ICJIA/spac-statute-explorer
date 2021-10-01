@@ -3,8 +3,7 @@ module.exports = {
   chainWebpack: (config) => {
     config.module
       .rule("wasm")
-      .test(/\.wasm$|\.db$/)
-
+      .test(/\.wasm$/)
       .type("javascript/auto");
   },
 };
