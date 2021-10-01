@@ -28,7 +28,7 @@
           >
             Time for query: {{ queryTime }}ms / Items: {{ queryLength }}
           </div>
-          <div id="results" class="mt-6"></div>
+          <div id="results" class="mt-6">Result table here...</div>
         </div>
       </v-col>
     </v-row>
@@ -140,6 +140,7 @@ export default {
     },
   },
   async mounted() {
+    window.NProgress.start();
     try {
       const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
       let databasePath;
@@ -155,10 +156,12 @@ export default {
     } catch (err) {
       console.log(err);
       this.err = err;
+      window.NProgress.done();
     }
     this.sqlStatement = "select * from sqlite_master where type='table'";
     this.loading = true;
     this.fetchData();
+    window.NProgress.done();
   },
 };
 </script>
