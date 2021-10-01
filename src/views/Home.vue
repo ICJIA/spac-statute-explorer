@@ -164,10 +164,11 @@ export default {
   },
   async mounted() {
     window.NProgress.start();
+    let database = "statutes.db";
     this.ready = false;
     try {
       const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
-      let databasePath = "./chinook.db";
+      let databasePath = `./${database}`;
 
       const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
       const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
