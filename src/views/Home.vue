@@ -28,27 +28,7 @@
           >
             Time for query: {{ queryTime }}ms / Items: {{ queryLength }}
           </div>
-          <div id="results">
-            <!--<div style="overflow: scroll; max-height: 500px" class="">
-               <table style="font-size: 12px" border="1" class="mt-6">
-              <thead>
-                <tr>
-                  <td v-for="(columnName, idx) in this.columns" :key="idx">
-                    {{ columnName }}
-                  </td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr></tr>
-                <tr v-for="(row, idx) in this.values" :key="`tbl-${idx}`">
-                  <td v-for="(value, idx) in row" :key="`cell-${idx}`">
-                    {{ trim(value) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            </div> -->
-          </div>
+          <div id="results" class="mt-6"></div>
         </div>
       </v-col>
     </v-row>
@@ -136,7 +116,19 @@ export default {
       const before = Date.now();
       try {
         console.log(this.sqlStatement);
-        const res = await this.db.exec(this.sqlStatement);
+        const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
+        let databasePath;
+        if (process.env.NODE_ENV === "development") {
+          databasePath = "http://localhost:8080/statutes.db";
+        } else {
+          databasePath = "https://statute-explorer.netlify.app/statutes.db";
+        }
+        const dataPromise = fetch(databasePath).then((res) =>
+          res.arrayBuffer()
+        );
+        const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+        const db = new SQL.Database(new Uint8Array(buf));
+        const res = await db.exec(this.sqlStatement);
         const after = Date.now();
         this.queryTime = after - before;
         this.res = res[0];
@@ -156,22 +148,22 @@ export default {
     },
   },
   async mounted() {
-    try {
-      const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
-      let databasePath;
-      if (process.env.NODE_ENV === "development") {
-        databasePath = "http://localhost:8080/statutes.db";
-      } else {
-        databasePath = "https://statute-explorer.netlify.app/statutes.db";
-      }
-      const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
-      const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
-      const db = new SQL.Database(new Uint8Array(buf));
-      this.db = db;
-    } catch (err) {
-      console.log(err);
-      this.err = err;
-    }
+    // try {
+    //   const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
+    //   let databasePath;
+    //   if (process.env.NODE_ENV === "development") {
+    //     databasePath = "http://localhost:8080/statutes.db";
+    //   } else {
+    //     databasePath = "https://statute-explorer.netlify.app/statutes.db";
+    //   }
+    //   const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
+    //   const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+    //   const db = new SQL.Database(new Uint8Array(buf));
+    //   this.db = db;
+    // } catch (err) {
+    //   console.log(err);
+    //   this.err = err;
+    // }
     this.sqlStatement = "select * from sqlite_master where type='table'";
     this.loading = true;
     this.fetchData();
