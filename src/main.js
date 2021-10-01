@@ -5,7 +5,8 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import "@/assets/app.css";
 import "@/assets/github-markdown.css";
-
+import "@fortawesome/fontawesome-free/css/all.css";
+import "material-design-icons-iconfont/dist/material-design-icons.css";
 Vue.config.productionTip = false;
 
 new Vue({

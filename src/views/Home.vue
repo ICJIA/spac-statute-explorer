@@ -20,15 +20,15 @@
             class="mt-4"
           ></v-progress-circular>
           <div class="mt-3" style="font-size: 12px; font-weight: bold">
-            Initializing Database ...
+            Initializing Application ...
           </div>
         </div>
-        <div class="d-flex">
+        <div class="d-flex" v-if="ready">
           <v-btn class="mr-2" @click="listTables()">Show all tables</v-btn>
           <v-spacer></v-spacer>
           <v-btn class="mr-2" @click="reset()">Reset</v-btn>
           <v-btn @click="execute()" dark color="blue darken-4"
-            >Execute SQL</v-btn
+            >Execute SQL<v-icon right large>arrow_right</v-icon></v-btn
           >
         </div>
         <pre class="error mt-5" v-if="err">{{ err.toString() }}</pre>
@@ -128,29 +128,32 @@ export default {
       this.fetchData();
     },
     async fetchData() {
-      // console.log(sqlDb.arrayBuffer());
       this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = `Building results table ...`;
       window.NProgress.start();
       const before = Date.now();
-      try {
-        const res = await this.db.exec(this.sqlStatement);
-        console.log("db queried");
-        const after = Date.now();
-        this.queryTime = after - before;
-        this.res = res[0];
-        this.columns = res[0].columns;
-        this.values = res[0].values;
-        this.queryLength = res[0].values.length;
-        this.loading = false;
-        this.buildResultsTable();
-      } catch (err) {
-        console.log(err);
-        this.err = err;
-        window.NProgress.done();
-        this.loading = false;
-      }
+
+      this.$nextTick(async () => {
+        try {
+          const res = await this.db.exec(this.sqlStatement);
+          console.log("db queried");
+
+          this.res = res[0];
+          this.columns = res[0].columns;
+          this.values = res[0].values;
+          this.queryLength = res[0].values.length;
+          this.loading = false;
+          const after = Date.now();
+          this.queryTime = after - before;
+          this.buildResultsTable();
+        } catch (err) {
+          console.log(err);
+          this.err = err;
+          window.NProgress.done();
+          this.loading = false;
+        }
+      });
 
       window.NProgress.done();
     },
