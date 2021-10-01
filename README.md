@@ -30,42 +30,9 @@ npm run build
 npm run lint
 ```
 
-## Sample setup
+## Creating a new in-memory database
 
-### Move files
-
-`./`
-
-```
-cp node_modules/sql.js/dist/sql-wasm.js ./public
-cp node_modules/sql.js/dist/sql-wasm.wasm ./public
-```
-
-### Imports
-
-`./views/Home.vue`
-
-```
-import initSqlJs from "sql.js";
-import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
-```
-
-### Create a new in-memory database and make a simple query
-
-`./views/Home.vue`
-
-```
-try {
-      const SQL = await initSqlJs({ locateFile: () => sqlWasm });
-      const db = new SQL.Database();
-      const res = await db.exec("select sqlite_version()");
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-```
-
-### Webpack config
+### Webpack loader config
 
 `./vue.config.js`
 
@@ -80,6 +47,30 @@ module.exports = {
   },
   ...
 };
+```
+
+### Imports
+
+`./views/Home.vue`
+
+```
+import initSqlJs from "sql.js";
+import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
+```
+
+### Create a new database and make a simple query
+
+`./views/Home.vue`
+
+```
+try {
+      const SQL = await initSqlJs({ locateFile: () => sqlWasm });
+      const db = new SQL.Database();
+      const res = await db.exec("select sqlite_version()");
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
 ```
 
 ### References

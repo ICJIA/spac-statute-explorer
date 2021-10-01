@@ -1,27 +1,34 @@
 <template>
-  <hello-world />
+  <v-container>
+    <v-row>
+      <v-col>
+        {{ res }}
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import initSqlJs from "sql.js";
-import HelloWorld from "../components/HelloWorld";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 
 export default {
   name: "Home",
+  data() {
+    return {
+      res: null,
+    };
+  },
   async mounted() {
-    console.log(sqlWasm);
+    //console.log(sqlWasm);
     try {
       const SQL = await initSqlJs({ locateFile: () => sqlWasm });
       const db = await new SQL.Database();
       const res = await db.exec("select sqlite_version()");
-      console.log(res);
+      this.res = res;
     } catch (err) {
       console.log(err);
     }
-  },
-  components: {
-    HelloWorld,
   },
 };
 </script>
