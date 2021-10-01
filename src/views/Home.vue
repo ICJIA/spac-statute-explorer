@@ -1,8 +1,52 @@
 <template>
-  <v-container>
+  <v-container class="markdown-body">
     <v-row>
       <v-col>
-        {{ res }}
+        <v-textarea
+          v-model="sqlStatement"
+          name="input"
+          class="mt-5"
+          ref="sql"
+          label="Enter SQL"
+          hint="No inspiration? Try “select sqlite_version()”"
+          outlined
+        ></v-textarea>
+        <div class="text-right">
+          <v-btn class="mr-2" @click="reset()">Reset</v-btn>
+          <v-btn @click="execute()">Execute SQL</v-btn>
+        </div>
+        <pre class="error mt-5" v-if="err">{{ err.toString() }}</pre>
+
+        <div>
+          <div
+            v-if="queryTime && res"
+            style="font-size: 12px"
+            class="mr-10 mt-10 text-right"
+          >
+            Time for query: {{ queryTime }}ms
+          </div>
+          <div id="results">
+            <!--<div style="overflow: scroll; max-height: 500px" class="">
+               <table style="font-size: 12px" border="1" class="mt-6">
+              <thead>
+                <tr>
+                  <td v-for="(columnName, idx) in this.columns" :key="idx">
+                    {{ columnName }}
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr></tr>
+                <tr v-for="(row, idx) in this.values" :key="`tbl-${idx}`">
+                  <td v-for="(value, idx) in row" :key="`cell-${idx}`">
+                    {{ trim(value) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </div> -->
+          </div>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -14,20 +58,106 @@ import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/
 
 export default {
   name: "Home",
+  watch: {},
   data() {
     return {
       res: null,
+      err: null,
+      sqlStatement: "select * from tbl_Statutes limit 15",
+      db: null,
+      columns: null,
+      values: null,
+      queryTime: null,
+      loading: null,
     };
   },
+
+  methods: {
+    trim(val) {
+      if (!val) return;
+      return val.toString().replace(/^\s+|\s+$/g, "");
+    },
+    reset() {
+      this.sqlStatement = "select * from tbl_Statutes limit 15";
+      this.res = null;
+      const el = document.getElementById("results");
+      el.innerHTML = "";
+    },
+    buildResultsTable() {
+      const el = document.getElementById("results");
+
+      //console.log(this.columns);
+      let columnNames = this.columns.map((col) => {
+        return `<th>${col}</th>`;
+      });
+      let rows = this.values.map((row) => {
+        return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
+      });
+      console.log(columnNames);
+      const table = `<div style="overflow: scroll; max-height: 500px" class="">
+      <table style="font-size: 12px" border="1" class="mt-6">
+      <thead>
+        <tr>
+         ${columnNames.join("")}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+                   ${rows.join("")}
+                  </td>
+                </tr>
+              </tbody>
+      </table>
+      </div>`;
+
+      el.innerHTML = table;
+    },
+    execute() {
+      this.loading = true;
+      this.fetchData();
+    },
+    async fetchData() {
+      const el = document.getElementById("results");
+      el.innerHTML = "Building results table ...";
+      window.NProgress.start();
+      const before = Date.now();
+      try {
+        console.log(this.sqlStatement);
+        const res = await this.db.exec(this.sqlStatement);
+        const after = Date.now();
+        this.queryTime = after - before;
+        this.res = res[0];
+        this.columns = res[0].columns;
+        this.values = res[0].values;
+        this.loading = false;
+        this.buildResultsTable();
+      } catch (err) {
+        console.log(err);
+        this.err = err;
+        window.NProgress.done();
+        this.loading = false;
+      }
+
+      window.NProgress.done();
+    },
+  },
   async mounted() {
-    //console.log(sqlWasm);
     try {
-      const SQL = await initSqlJs({ locateFile: () => sqlWasm });
-      const db = await new SQL.Database();
-      const res = await db.exec("select sqlite_version()");
-      this.res = res;
+      const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
+      let databasePath;
+      if (process.env.NODE_ENV === "development") {
+        databasePath = "http://localhost:8080/statutes.db";
+      } else {
+        databasePath = "https://statute-explorer.netlify.app/statutes.db";
+      }
+      const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
+      const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+      const db = new SQL.Database(new Uint8Array(buf));
+      this.db = db;
     } catch (err) {
       console.log(err);
+      this.err = err;
     }
   },
 };
