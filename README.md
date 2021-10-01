@@ -32,7 +32,7 @@ npm run lint
 
 ### Demo
 
-https://statutes.icjia.cloud/
+- https://statutes.icjia.cloud/
 
 ### References
 
