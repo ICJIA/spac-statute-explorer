@@ -30,49 +30,6 @@ npm run build
 npm run lint
 ```
 
-## Creating a new in-memory database
-
-### Webpack loader config
-
-`./vue.config.js`
-
-```
-module.exports = {
- ...
-  chainWebpack: (config) => {
-    config.module
-      .rule("wasm")
-      .test(/\.wasm$/)
-      .type("javascript/auto");
-  },
-  ...
-};
-```
-
-### Imports
-
-`./views/Home.vue`
-
-```
-import initSqlJs from "sql.js";
-import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
-```
-
-### Create a new database and make a simple query
-
-`./views/Home.vue`
-
-```
-try {
-      const SQL = await initSqlJs({ locateFile: () => sqlWasm });
-      const db = new SQL.Database();
-      const res = await db.exec("select sqlite_version()");
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-```
-
 ### References
 
 - https://reposhub.com/javascript/storage/sql-js-sql-js.html
