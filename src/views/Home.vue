@@ -167,12 +167,8 @@ export default {
     this.ready = false;
     try {
       const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
-      let databasePath;
-      if (process.env.NODE_ENV === "development") {
-        databasePath = "./statutes.db";
-      } else {
-        databasePath = "./statutes.db";
-      }
+      let databasePath = "./chinook.db";
+
       const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
       const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
       const db = new SQL.Database(new Uint8Array(buf));
