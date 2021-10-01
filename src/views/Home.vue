@@ -12,9 +12,19 @@
             outlined
           ></v-textarea>
         </div>
-        <div v-else style="height: 200px" class="text-center">Loading...</div>
+        <div v-else style="height: 200px" class="text-center">
+          <v-progress-circular
+            indeterminate
+            color="purple darken-4"
+            size="100"
+            class="mt-4"
+          ></v-progress-circular>
+          <div class="mt-3" style="font-size: 12px; font-weight: bold">
+            Initializing Database ...
+          </div>
+        </div>
         <div class="d-flex">
-          <v-btn class="mr-2" @click="listTables()">List all tables</v-btn>
+          <v-btn class="mr-2" @click="listTables()">Show all tables</v-btn>
           <v-spacer></v-spacer>
           <v-btn class="mr-2" @click="reset()">Reset</v-btn>
           <v-btn @click="execute()" dark color="blue darken-4"
@@ -81,6 +91,7 @@ export default {
       el.innerHTML = "";
     },
     buildResultsTable() {
+      window.NProgress.start();
       const el = document.getElementById("results");
 
       //console.log(this.columns);
@@ -110,6 +121,7 @@ export default {
 
       el.innerHTML = table;
       console.log("db table built");
+      window.NProgress.done();
     },
     execute() {
       this.loading = true;
