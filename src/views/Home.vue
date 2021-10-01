@@ -52,12 +52,12 @@
 import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 //import sqlDb from "!!file-loader?name=statutes-[contenthash].db!../../public/statutes.db";
-import binAsString from "!!binary-loader!../../public/statutes.db";
-let dbArray = new Uint8Array(binAsString.length);
-for (let i = 0; i < binAsString.length; i++) {
-  dbArray[i] = binAsString.charCodeAt(i);
-}
-console.log(dbArray);
+// import binAsString from "!!binary-loader!../../public/statutes.db";
+// let dbArray = new Uint8Array(binAsString.length);
+// for (let i = 0; i < binAsString.length; i++) {
+//   dbArray[i] = binAsString.charCodeAt(i);
+// }
+// console.log(array);
 export default {
   name: "Home",
   watch: {},
@@ -162,19 +162,18 @@ export default {
       window.NProgress.done();
     },
   },
-  async created() {
+  async mounted() {
     window.NProgress.start();
     this.ready = false;
     try {
       const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
-      // let databasePath;
-      // if (process.env.NODE_ENV === "development") {
-      //   databasePath = "./statutes.db";
-      // } else {
-      //   databasePath = "./statutes.db";
-      // }
-      // const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
-      const dataPromise = dbArray;
+      let databasePath;
+      if (process.env.NODE_ENV === "development") {
+        databasePath = "./statutes.db";
+      } else {
+        databasePath = "./statutes.db";
+      }
+      const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
       const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
       const db = new SQL.Database(new Uint8Array(buf));
       this.db = await db;
