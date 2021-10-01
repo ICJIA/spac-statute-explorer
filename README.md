@@ -50,7 +50,7 @@ import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 ```
 
-### Create a new database and make a simple query
+### Create a new in-memory database and make a simple query
 
 `./views/Home.vue`
 
