@@ -26,6 +26,7 @@
       <v-btn
         text
         href="https://github.com/ICJIA/spac-statute-explorer"
+        rel="noopener"
         target="_blank"
         >GitHub<v-icon right>open_in_new</v-icon></v-btn
       >
