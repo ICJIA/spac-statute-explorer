@@ -2,7 +2,9 @@
 
 > Proof of concept test integrating Vue and https://sql.js.org
 
-> Uses Webpack's [file-loader](https://v4.webpack.js.org/loaders/file-loader/) to load the Web Assembly (WASM) sqlite3 module, creates a new database, and makes a raw SQL query. All client-side.
+> Uses Webpack's [file-loader](https://v4.webpack.js.org/loaders/file-loader/) and loads the Web Assembly (WASM) sqlite3 module, creates a new in-memory database, and makes a raw SQL query.
+
+All client-side.
 
 ## Project setup
 
@@ -30,23 +32,32 @@ npm run lint
 
 ## Sample setup
 
-### Import
+### Move files
 
-`views/Home.vue:`
+`./`
+
+```
+cp node_modules/sql.js/dist/sql-wasm.js ./public
+cp node_modules/sql.js/dist/sql-wasm.wasm ./public
+```
+
+### Imports
+
+`views/Home.vue`
 
 ```
 import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 ```
 
-### Create a new database in memory and make a simple query
+### Create a new database and make a simple query
 
-`views/Home.vue:`
+`views/Home.vue`
 
 ```
 try {
       const SQL = await initSqlJs({ locateFile: () => sqlWasm });
-      const db = await new SQL.Database();
+      const db = new SQL.Database();
       const res = await db.exec("select sqlite_version()");
       console.log(res);
     } catch (err) {
@@ -56,7 +67,7 @@ try {
 
 ### Webpack config
 
-`vue.config.js:`
+`vue.config.js`
 
 ```
 module.exports = {
