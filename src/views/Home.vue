@@ -177,6 +177,10 @@ export default {
           this.loading = false;
           const after = Date.now();
           this.queryTime = after - before;
+          this.$gtag.event("repl", {
+            event_category: "sqlStatement",
+            event_label: this.sqlStatement,
+          });
           this.buildResultsTable();
         } catch (err) {
           console.log(err);
