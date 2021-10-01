@@ -43,7 +43,7 @@ cp node_modules/sql.js/dist/sql-wasm.wasm ./public
 
 ### Imports
 
-`views/Home.vue`
+`./views/Home.vue`
 
 ```
 import initSqlJs from "sql.js";
@@ -52,7 +52,7 @@ import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/
 
 ### Create a new database and make a simple query
 
-`views/Home.vue`
+`./views/Home.vue`
 
 ```
 try {
@@ -67,7 +67,7 @@ try {
 
 ### Webpack config
 
-`vue.config.js`
+`./vue.config.js`
 
 ```
 module.exports = {
