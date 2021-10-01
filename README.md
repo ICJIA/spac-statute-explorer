@@ -30,6 +30,10 @@ npm run build
 npm run lint
 ```
 
+### Demo
+
+https://statute-explorer.netlify.app/
+
 ### References
 
 - https://reposhub.com/javascript/storage/sql-js-sql-js.html
