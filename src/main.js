@@ -8,6 +8,14 @@ import "@/assets/github-markdown.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 Vue.config.productionTip = false;
+import VueGtag from "vue-gtag";
+Vue.use(
+  VueGtag,
+  {
+    config: { id: "G-Q14RK9Y4L8" },
+  },
+  router
+);
 
 new Vue({
   router,
