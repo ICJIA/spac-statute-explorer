@@ -38,7 +38,9 @@
 <script>
 import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
-
+import sqlDb from "!!file-loader?name=statutes-[contenthash].db!../../public/statutes.db";
+// const uInt8Array = new Uint8Array(sqlDb);
+console.log(sqlDb);
 export default {
   name: "Home",
   watch: {},
@@ -84,7 +86,7 @@ export default {
       let rows = this.values.map((row) => {
         return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
       });
-      console.log(columnNames);
+      //console.log(columnNames);
       const table = `<div style="overflow-y: auto; overflow-x: auto; max-height: 500px" >
       <table style="font-size: 12px" border="1" class="mt-6 px-3">
       <thead>
@@ -103,12 +105,14 @@ export default {
       </div>`;
 
       el.innerHTML = table;
+      console.log("db table built");
     },
     execute() {
       this.loading = true;
       this.fetchData();
     },
     async fetchData() {
+      // console.log(sqlDb.arrayBuffer());
       this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = `Building results table ...`;
@@ -119,16 +123,18 @@ export default {
         const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
         let databasePath;
         if (process.env.NODE_ENV === "development") {
-          databasePath = "http://localhost:8080/statutes.db";
+          databasePath = "./statutes.db";
         } else {
-          databasePath = "https://statute-explorer.netlify.app/statutes.db";
+          databasePath = "./statutes.db";
         }
-        const dataPromise = fetch(databasePath).then((res) =>
-          res.arrayBuffer()
-        );
+        const dataPromise = fetch(databasePath).then((res) => {
+          return res.arrayBuffer();
+        });
+        // const dataPromise = arrBuff;
         console.log("db fetched");
         const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
         const db = new SQL.Database(new Uint8Array(buf));
+        console.log(buf);
         const res = await db.exec(this.sqlStatement);
         console.log("db queried");
         const after = Date.now();
