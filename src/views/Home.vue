@@ -155,7 +155,7 @@ export default {
       window.NProgress.done();
     },
   },
-  async mounted() {
+  async created() {
     window.NProgress.start();
     this.ready = false;
     try {
@@ -173,12 +173,11 @@ export default {
     } catch (err) {
       console.log(err);
       this.err = err;
-      window.NProgress.done();
     }
     this.sqlStatement = "select * from sqlite_master where type='table'";
     this.ready = true;
-    //this.fetchData();
     window.NProgress.done();
+    this.fetchData();
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="blue darken-4" dark>
+    <v-app-bar app color="purple darken-4" dark>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -11,6 +11,8 @@
           width="40"
         />
       </div>
+      <v-spacer></v-spacer>
+      <!-- <v-btn text to="/">Home</v-btn> -->
     </v-app-bar>
 
     <v-main>
