@@ -2,14 +2,17 @@
   <v-container class="markdown-body">
     <v-row>
       <v-col>
-        <v-textarea
-          v-model="sqlStatement"
-          name="input"
-          class="mt-5"
-          ref="sql"
-          label="Enter SQL"
-          outlined
-        ></v-textarea>
+        <div v-if="ready">
+          <v-textarea
+            v-model="sqlStatement"
+            name="input"
+            class="mt-5"
+            ref="sql"
+            label="Enter SQL"
+            outlined
+          ></v-textarea>
+        </div>
+        <div v-else style="height: 200px" class="text-center">Loading...</div>
         <div class="d-flex">
           <v-btn class="mr-2" @click="listTables()">List all tables</v-btn>
           <v-spacer></v-spacer>
@@ -28,7 +31,7 @@
           >
             Time for query: {{ queryTime }}ms / Items: {{ queryLength }}
           </div>
-          <div id="results" class="mt-6">Result table here...</div>
+          <div id="results" class="mt-6"></div>
         </div>
       </v-col>
     </v-row>
@@ -55,6 +58,7 @@ export default {
       queryTime: null,
       queryLength: null,
       loading: null,
+      ready: false,
     };
   },
 
@@ -141,6 +145,7 @@ export default {
   },
   async mounted() {
     window.NProgress.start();
+    this.ready = false;
     try {
       const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
       let databasePath;
@@ -159,8 +164,8 @@ export default {
       window.NProgress.done();
     }
     this.sqlStatement = "select * from sqlite_master where type='table'";
-    this.loading = true;
-    this.fetchData();
+    this.ready = true;
+    //this.fetchData();
     window.NProgress.done();
   },
 };
