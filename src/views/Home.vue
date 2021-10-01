@@ -3,6 +3,13 @@
     <v-row>
       <v-col>
         <div v-if="ready">
+          <v-select
+            :items="databases"
+            filled
+            label="Select a database"
+            v-model="database"
+            v-on:change="selectDatabase()"
+          ></v-select>
           <v-textarea
             v-model="sqlStatement"
             name="input"
@@ -63,6 +70,7 @@ export default {
   watch: {},
   data() {
     return {
+      databases: ["statutes.db", "chinook.db"],
       res: null,
       err: null,
       sqlStatement: "select * from sqlite_master where type='table'",
@@ -73,6 +81,7 @@ export default {
       queryLength: null,
       loading: null,
       ready: false,
+      database: "statutes.db",
     };
   },
 
@@ -131,6 +140,13 @@ export default {
       this.loading = true;
       this.fetchData();
     },
+    async selectDatabase() {
+      window.NProgress.start();
+      console.log("selected database: ", this.database);
+      await this.initialize();
+      this.fetchData();
+      window.NProgress.done();
+    },
     async fetchData() {
       this.err = null;
       const el = document.getElementById("results");
@@ -161,27 +177,28 @@ export default {
 
       window.NProgress.done();
     },
+    async initialize() {
+      this.ready = false;
+      try {
+        const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
+        let databasePath = `./${this.database}`;
+        const dataPromise = fetch(databasePath).then((res) =>
+          res.arrayBuffer()
+        );
+        const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+        const db = new SQL.Database(new Uint8Array(buf));
+        this.db = await db;
+      } catch (err) {
+        console.log(err);
+        this.err = err;
+      }
+      this.sqlStatement = "select * from sqlite_master where type='table'";
+      this.ready = true;
+    },
   },
-  async mounted() {
-    window.NProgress.start();
-    let database = "statutes.db";
-    this.ready = false;
-    try {
-      const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
-      let databasePath = `./${database}`;
 
-      const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
-      const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
-      const db = new SQL.Database(new Uint8Array(buf));
-      this.db = await db;
-    } catch (err) {
-      console.log(err);
-      this.err = err;
-    }
-    this.sqlStatement = "select * from sqlite_master where type='table'";
-    this.ready = true;
-    window.NProgress.done();
-    this.fetchData();
+  async mounted() {
+    this.selectDatabase();
   },
 };
 </script>
