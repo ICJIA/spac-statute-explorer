@@ -47,9 +47,12 @@
           <div
             v-if="queryTime && res"
             style="font-size: 12px"
-            class="mr-10 mt-12 text-right"
+            class="mr-2 mt-12 text-right"
           >
-            Query: {{ queryTime }}ms / Rows: {{ queryLength }}
+            Database
+            <strong>{{ database }}</strong> / Query
+            <strong>{{ queryTime }}ms</strong> / Rows
+            <strong>{{ queryLength }}</strong>
           </div>
           <div id="results" class="mt-6"></div>
         </div>
@@ -61,13 +64,6 @@
 <script>
 import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
-//import sqlDb from "!!file-loader?name=statutes-[contenthash].db!../../public/statutes.db";
-// import binAsString from "!!binary-loader!../../public/statutes.db";
-// let dbArray = new Uint8Array(binAsString.length);
-// for (let i = 0; i < binAsString.length; i++) {
-//   dbArray[i] = binAsString.charCodeAt(i);
-// }
-// console.log(array);
 export default {
   name: "Home",
   watch: {},
@@ -125,23 +121,23 @@ export default {
         return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
       });
       //console.log(columnNames);
-      const table = `<div style="overflow-y: auto; overflow-x: auto; max-height: 500px" >
-      <table style="font-size: 12px" border="1" class="mt-6 px-3">
-      <thead>
-        <tr>
-         ${columnNames.join("")}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-                   ${rows.join("")}
-                  </td>
-                </tr>
-              </tbody>
-      </table>
+      const table = `
+      <div style="overflow-y: auto; overflow-x: auto; max-height: 500px" >
+        <table style="font-size: 12px" border="1" class="mt-6 px-3">
+          <thead>
+            <tr>
+              ${columnNames.join("")}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                ${rows.join("")}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>`;
-
       el.innerHTML = table;
       console.log("db table built");
       window.NProgress.done();
@@ -195,6 +191,7 @@ export default {
     },
     async initialize() {
       this.ready = false;
+      const el = document.getElementById("results");
       try {
         const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
         let databasePath = `./${this.database}`;
@@ -207,6 +204,9 @@ export default {
       } catch (err) {
         console.log(err);
         this.err = err;
+        window.NProgress.done();
+        el.innerHTML = "";
+        this.loading = false;
       }
       this.sqlStatement = "select * from sqlite_master where type='table'";
       this.ready = true;
