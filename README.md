@@ -30,7 +30,7 @@ npm run lint
 
 ### Demo
 
-https://statute-explorer.netlify.app/
+https://statutes.icjia.cloud/
 
 ### References
 
