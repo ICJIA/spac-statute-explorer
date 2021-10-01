@@ -154,6 +154,10 @@ export default {
       el.innerHTML = "";
       window.NProgress.start();
       console.log("selected database: ", this.database);
+      this.$gtag.event("selectDatabase", {
+        event_category: "database",
+        event_label: this.database,
+      });
       await this.initialize();
       this.fetchData();
       window.NProgress.done();
