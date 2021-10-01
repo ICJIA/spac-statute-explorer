@@ -119,23 +119,7 @@ export default {
       window.NProgress.start();
       const before = Date.now();
       try {
-        console.log(this.sqlStatement);
-        const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
-        let databasePath;
-        if (process.env.NODE_ENV === "development") {
-          databasePath = "./statutes.db";
-        } else {
-          databasePath = "./statutes.db";
-        }
-        const dataPromise = fetch(databasePath).then((res) => {
-          return res.arrayBuffer();
-        });
-        // const dataPromise = arrBuff;
-        console.log("db fetched");
-        const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
-        const db = new SQL.Database(new Uint8Array(buf));
-        console.log(buf);
-        const res = await db.exec(this.sqlStatement);
+        const res = await this.db.exec(this.sqlStatement);
         console.log("db queried");
         const after = Date.now();
         this.queryTime = after - before;
@@ -156,22 +140,22 @@ export default {
     },
   },
   async mounted() {
-    // try {
-    //   const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
-    //   let databasePath;
-    //   if (process.env.NODE_ENV === "development") {
-    //     databasePath = "http://localhost:8080/statutes.db";
-    //   } else {
-    //     databasePath = "https://statute-explorer.netlify.app/statutes.db";
-    //   }
-    //   const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
-    //   const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
-    //   const db = new SQL.Database(new Uint8Array(buf));
-    //   this.db = db;
-    // } catch (err) {
-    //   console.log(err);
-    //   this.err = err;
-    // }
+    try {
+      const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
+      let databasePath;
+      if (process.env.NODE_ENV === "development") {
+        databasePath = "./statutes.db";
+      } else {
+        databasePath = "./statutes.db";
+      }
+      const dataPromise = fetch(databasePath).then((res) => res.arrayBuffer());
+      const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+      const db = new SQL.Database(new Uint8Array(buf));
+      this.db = await db;
+    } catch (err) {
+      console.log(err);
+      this.err = err;
+    }
     this.sqlStatement = "select * from sqlite_master where type='table'";
     this.loading = true;
     this.fetchData();
