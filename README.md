@@ -1,8 +1,8 @@
 # spac-statute-explorer
 
-> Proof of concept test integrating Vue and https://sql.js.org
+> Proof of concept REPL integrating Vue and https://sql.js.org
 
-> Uses Webpack's [file-loader](https://v4.webpack.js.org/loaders/file-loader/) and loads the Web Assembly (WASM) sqlite3 module, creates a new in-memory database, and makes a raw SQL query.
+> Uses Webpack's file-loader and loads the Web Assembly (WASM) sqlite3 module, loads into client memory a sqlite database of Illinois criminal statutes.
 
 All client-side.
 
