@@ -46,7 +46,7 @@
             style="font-size: 12px"
             class="mr-10 mt-10 text-right"
           >
-            Time for query: {{ queryTime }}ms / Items: {{ queryLength }}
+            Query: {{ queryTime }}ms / Rows: {{ queryLength }}
           </div>
           <div id="results" class="mt-6"></div>
         </div>
@@ -70,7 +70,7 @@ export default {
   watch: {},
   data() {
     return {
-      databases: ["statutes.db", "chinook.db"],
+      databases: ["statutes.db", "chinook.db", "northwind.db"],
       res: null,
       err: null,
       sqlStatement: "select * from sqlite_master where type='table'",
@@ -141,6 +141,8 @@ export default {
       this.fetchData();
     },
     async selectDatabase() {
+      const el = document.getElementById("results");
+      el.innerHTML = "";
       window.NProgress.start();
       console.log("selected database: ", this.database);
       await this.initialize();
