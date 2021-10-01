@@ -172,6 +172,9 @@ export default {
       console.log(err);
       this.err = err;
     }
+    this.sqlStatement = "select * from sqlite_master where type='table'";
+    this.loading = true;
+    this.fetchData();
   },
 };
 </script>
