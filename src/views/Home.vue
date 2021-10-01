@@ -70,7 +70,7 @@ export default {
   watch: {},
   data() {
     return {
-      databases: ["statutes.db", "chinook.db", "northwind.db"],
+      databases: ["statutes.db", "chinook.db"],
       res: null,
       err: null,
       sqlStatement: "select * from sqlite_master where type='table'",
@@ -141,6 +141,9 @@ export default {
       this.fetchData();
     },
     async selectDatabase() {
+      this.queryTime = null;
+      this.queryLength = null;
+      this.res = null;
       const el = document.getElementById("results");
       el.innerHTML = "";
       window.NProgress.start();
