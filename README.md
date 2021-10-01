@@ -32,12 +32,16 @@ npm run lint
 
 ### Import
 
+`views/Home.vue:`
+
 ```
 import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 ```
 
 ### Create a new database in memory and make a simple query.
+
+`views/Home.vue:`
 
 ```
 try {
