@@ -66,7 +66,7 @@ export default {
     return {
       res: null,
       err: null,
-      sqlStatement: "select * from tbl_Statutes limit 15",
+      sqlStatement: "select * from sqlite_master where type='table'",
       db: null,
       columns: null,
       values: null,
@@ -88,7 +88,7 @@ export default {
       return val.toString().replace(/^\s+|\s+$/g, "");
     },
     reset() {
-      this.sqlStatement = "select * from tbl_Statutes limit 15";
+      this.sqlStatement = "select * from sqlite_master where type='table'";
       this.res = null;
       this.err = null;
       const el = document.getElementById("results");
