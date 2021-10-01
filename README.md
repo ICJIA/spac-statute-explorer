@@ -84,6 +84,8 @@ module.exports = {
 
 ### References
 
+- https://reposhub.com/javascript/storage/sql-js-sql-js.html
+
 - https://github.com/sql-js/react-sqljs-demo
 
 - https://sql.js.org/#/?id=using-fetch
