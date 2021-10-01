@@ -19,7 +19,7 @@
             outlined
           ></v-textarea>
         </div>
-        <div v-else style="height: 200px" class="text-center">
+        <div v-if="!ready" style="height: 200px" class="text-center">
           <v-progress-circular
             indeterminate
             color="purple darken-4"
@@ -31,20 +31,23 @@
           </div>
         </div>
         <div class="d-flex" v-if="ready">
-          <v-btn class="mr-2" @click="listTables()">Show all tables</v-btn>
+          <v-btn small class="mr-2" @click="listTables()"
+            >Show all tables</v-btn
+          >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" @click="reset()">Reset</v-btn>
-          <v-btn @click="execute()" dark color="blue darken-4"
+          <v-btn small outlined class="mr-2" @click="clear()">Clear</v-btn>
+          <v-btn small class="mr-2" @click="reset()">Reset</v-btn>
+          <v-btn small @click="execute()" dark color="blue darken-4"
             >Execute SQL<v-icon right large>arrow_right</v-icon></v-btn
           >
         </div>
-        <pre class="error mt-5" v-if="err">{{ err.toString() }}</pre>
+        <pre class="error mt-5" v-if="err && ready">{{ err.toString() }}</pre>
 
         <div>
           <div
             v-if="queryTime && res"
             style="font-size: 12px"
-            class="mr-10 mt-10 text-right"
+            class="mr-10 mt-12 text-right"
           >
             Query: {{ queryTime }}ms / Rows: {{ queryLength }}
           </div>
@@ -98,6 +101,13 @@ export default {
     },
     reset() {
       this.sqlStatement = "select * from sqlite_master where type='table'";
+      this.res = null;
+      this.err = null;
+      const el = document.getElementById("results");
+      el.innerHTML = "";
+    },
+    clear() {
+      this.sqlStatement = "";
       this.res = null;
       this.err = null;
       const el = document.getElementById("results");
@@ -176,6 +186,7 @@ export default {
           console.log(err);
           this.err = err;
           window.NProgress.done();
+          el.innerHTML = "";
           this.loading = false;
         }
       });
