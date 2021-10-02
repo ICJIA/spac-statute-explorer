@@ -159,7 +159,9 @@ export default {
       </div>`;
       el.innerHTML = table;
       console.log("db table built");
-      window.$("#myTable").DataTable();
+      window.$("#myTable").DataTable({
+        responsive: true,
+      });
       window.NProgress.done();
     },
     execute() {
