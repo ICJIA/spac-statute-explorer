@@ -121,15 +121,13 @@ export default {
       window.NProgress.start();
       const el = document.getElementById("results");
 
-      //console.log(this.columns);
       let columnNames = this.columns.map((col) => {
         return `<th>${col}</th>`;
       });
-      //console.log(columnNames);
+
       let rows = this.values.map((row) => {
         return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
       });
-      //console.log(rows);
 
       const table = `
       <div style="overflow-y: auto; overflow-x: auto;" >

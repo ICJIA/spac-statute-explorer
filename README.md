@@ -30,7 +30,17 @@ npm run build
 npm run lint
 ```
 
-### Demo
+## Examples
+
+### SQL query
+
+- https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Home.vue
+
+### Keyword query
+
+- https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Keyword.vue
+
+### Live Demo
 
 - https://statutes.icjia.cloud/
 
