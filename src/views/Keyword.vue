@@ -245,7 +245,7 @@ export default {
       if (keyword.length < 4) return;
 
       this.$nextTick(() => {
-        let sqlStatement = `select mandatoryMinimums, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
+        let sqlStatement = `select statute, mandatoryMinimums, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
         this.sqlStatement = sqlStatement;
         console.log(this.sqlStatement);
         this.res = null;
