@@ -8,6 +8,7 @@
             filled
             label="Keyword search (Must be more than 3 characters)"
             v-on:keyup="buildSqlStatement(keyword)"
+            style="font-weight: bold !important"
           ></v-text-field>
           <v-textarea
             v-model="sqlStatement"
