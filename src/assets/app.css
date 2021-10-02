@@ -40,4 +40,12 @@
 .dataTables_filter {
   font-size: 12px;
   margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.dataTables_info,
+.dataTables_paginate {
+  font-size: 12px;
+  margin-top: 0px;
+  font-weight: bold;
 }
