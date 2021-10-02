@@ -28,7 +28,7 @@
             class="mt-4"
           ></v-progress-circular>
           <div class="mt-5" style="font-size: 12px; font-weight: bold">
-            Initializing Statute Explorer ...
+            Initializing SPAC Statute Explorer. Please wait...
           </div>
         </div>
         <div class="d-flex" v-if="ready">
@@ -144,10 +144,7 @@ export default {
           // eslint-disable-next-line no-unused-vars
           .map((cell, idx) => {
             let col = columnNames[idx].replace(new RegExp("<[^>]*>", "g"), "");
-            // if (col === "ID") {
-            //   let ID = cell;
-            //   console.log(ID);
-            // }
+
             let result;
             //TODO: Add format button here for 'Statute Text'
             // if (col === "Statute Text") {
@@ -155,8 +152,15 @@ export default {
             // } else {
             //   result = `<td>${cell}</td>`;
             // }
+
             if (col === "Statute Text") {
-              result = `<td class="px-4 py-12"><span class="">${cell}</span></td>`;
+              let text = cell;
+              let formattedText = text
+                .replace(/@0@/gi, "\n\n")
+                .replace(/@1@/gi, "\n\n&nbsp;&nbsp;")
+                .replace(/@2@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;");
+
+              result = `<td class="px-4 py-2"><pre>${formattedText}</pre></td>`;
             } else {
               result = `<td>${cell}</td>`;
             }
@@ -309,7 +313,6 @@ export default {
 <style>
 .js-button {
   position: absolute;
-
   right: 20px;
   display: inline-block;
   cursor: pointer;
@@ -319,5 +322,12 @@ export default {
   border-radius: 8px;
   font-size: 10px;
   font-weight: bold;
+}
+
+pre {
+  font-family: "Roboto", sans-serif !important;
+  white-space: pre-wrap;
+  background: transparent !important;
+  font-size: 12px !important;
 }
 </style>
