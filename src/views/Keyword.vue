@@ -234,10 +234,6 @@ export default {
         this.loading = false;
         const after = Date.now();
         this.queryTime = after - before;
-        this.$gtag.event("repl", {
-          event_category: "sqlStatement",
-          event_label: JSON.stringify(this.sqlStatement),
-        });
 
         this.buildResultsTable();
       } catch (err) {
@@ -276,6 +272,10 @@ export default {
 
       this.$nextTick(() => {
         let sqlStatement = `select id, statute, mandatoryMinimums, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
+        this.$gtag.event("keywordSearch", {
+          event_category: "sqlStatement",
+          event_label: this.keyword,
+        });
         this.sqlStatement = sqlStatement;
         console.log(this.sqlStatement);
         this.res = null;
