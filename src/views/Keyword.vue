@@ -162,7 +162,7 @@ export default {
 
               result = `<td class="px-4 py-2"><pre>${formattedText}</pre></td>`;
             } else {
-              result = `<td>${cell}</td>`;
+              result = `<td class="px-4 py-6"><strong>${cell}</strong></td>`;
             }
             return result;
           })
@@ -329,5 +329,10 @@ pre {
   white-space: pre-wrap;
   background: transparent !important;
   font-size: 12px !important;
+}
+
+table td,
+table td * {
+  vertical-align: top;
 }
 </style>
