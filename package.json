@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "kill-port 8080 && vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build:serve": "npm run build && serve ./dist"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
