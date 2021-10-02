@@ -19,6 +19,7 @@
             outlined
           ></v-textarea>
         </div>
+
         <div v-if="!ready" style="height: 200px" class="text-center">
           <v-progress-circular
             indeterminate
@@ -42,10 +43,11 @@
           >
         </div>
         <pre class="error mt-5" v-if="err && ready">{{ err.toString() }}</pre>
+        <pre class="error mt-5" v-if="status && ready">No results</pre>
 
         <div>
           <div
-            v-if="queryTime && res"
+            v-if="queryTime && res && !err"
             style="font-size: 12px"
             class="mr-2 mt-12 text-right"
           >
@@ -80,6 +82,7 @@ export default {
       queryLength: null,
       loading: null,
       ready: false,
+      status: null,
       database: "statutes.db",
     };
   },
@@ -117,10 +120,12 @@ export default {
       let columnNames = this.columns.map((col) => {
         return `<th>${col}</th>`;
       });
+      //console.log(columnNames);
       let rows = this.values.map((row) => {
         return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
       });
-      //console.log(columnNames);
+      //console.log(rows);
+
       const table = `
       <div style="overflow-y: auto; overflow-x: auto; max-height: 500px" >
         <table style="font-size: 12px" border="1" class="mt-6 px-3">
@@ -167,14 +172,21 @@ export default {
       const el = document.getElementById("results");
       el.innerHTML = `Building results table ...`;
       window.NProgress.start();
+
       const before = Date.now();
 
       this.$nextTick(async () => {
         try {
           const res = await this.db.exec(this.sqlStatement);
           console.log("db queried");
-
+          if (!res.length) {
+            console.log("no results");
+            this.err = "No results";
+            el.innerHTML = ``;
+            return;
+          }
           this.res = res[0];
+
           this.columns = res[0].columns;
           this.values = res[0].values;
           this.queryLength = res[0].values.length;
