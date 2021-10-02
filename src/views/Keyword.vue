@@ -27,8 +27,8 @@
             size="100"
             class="mt-4"
           ></v-progress-circular>
-          <div class="mt-3" style="font-size: 12px; font-weight: bold">
-            Initializing Application ...
+          <div class="mt-5" style="font-size: 12px; font-weight: bold">
+            Initializing Statute Explorer ...
           </div>
         </div>
         <div class="d-flex" v-if="ready">
