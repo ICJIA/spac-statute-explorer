@@ -35,3 +35,9 @@
   -webkit-animation: nprogress-spinner 400ms linear infinite;
   animation: nprogress-spinner 400ms linear infinite;
 }
+
+.dataTables_length,
+.dataTables_filter {
+  font-size: 12px;
+  margin-bottom: 10px;
+}

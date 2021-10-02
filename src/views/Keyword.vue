@@ -64,7 +64,11 @@
             <strong>&nbsp;{{ queryTime }}ms</strong>&nbsp;/&nbsp;Rows
             <strong>&nbsp;{{ queryLength }}</strong>
           </div>
-          <div id="results" class="mt-6"></div>
+          <div
+            id="results"
+            class="mt-6 pt-6"
+            :class="{ divider: ready && res }"
+          ></div>
         </div>
       </v-col>
     </v-row>
@@ -141,24 +145,23 @@ export default {
       //console.log(rows);
 
       const table = `
-      <div style="overflow-y: auto; overflow-x: auto; max-height: 500px" >
-        <table style="font-size: 12px" border="1" class="mt-6 px-3">
+      <div style="overflow-y: auto; overflow-x: auto;" >
+        <table style="font-size: 12px" border="1" class="pt-6 px-3" id="myTable">
           <thead>
             <tr>
               ${columnNames.join("")}
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
+            
                 ${rows.join("")}
-              </td>
-            </tr>
+              
           </tbody>
         </table>
       </div>`;
       el.innerHTML = table;
       console.log("db table built");
+      window.$("#myTable").DataTable();
       window.NProgress.done();
     },
     execute() {
