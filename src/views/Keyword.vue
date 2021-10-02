@@ -138,8 +138,31 @@ export default {
         return `<th>${col}</th>`;
       });
 
+      //console.log(columnNames);
       let rows = this.values.map((row) => {
-        return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
+        return `<tr style="display: relative !important;">${row
+          // eslint-disable-next-line no-unused-vars
+          .map((cell, idx) => {
+            let col = columnNames[idx].replace(new RegExp("<[^>]*>", "g"), "");
+            // if (col === "ID") {
+            //   let ID = cell;
+            //   console.log(ID);
+            // }
+            let result;
+            //TODO: Add format button here for 'Statute Text'
+            // if (col === "Statute Text") {
+            //   result = `<td class="px-4 py-12"><span class="">${cell}</span><div style="margin-top: 5px !important;"></div><div class="js-button" onclick="window.$vue.alert(ID)">Format statute <i class="fas fa-align-justify"></i></div></td>`;
+            // } else {
+            //   result = `<td>${cell}</td>`;
+            // }
+            if (col === "Statute Text") {
+              result = `<td class="px-4 py-12"><span class="">${cell}</span></td>`;
+            } else {
+              result = `<td>${cell}</td>`;
+            }
+            return result;
+          })
+          .join("")}</tr>`;
       });
 
       const table = `
@@ -260,7 +283,7 @@ export default {
       if (keyword.length < 4) return;
 
       this.$nextTick(() => {
-        let sqlStatement = `select statute, mandatoryMinimums, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
+        let sqlStatement = `select id, statute, mandatoryMinimums, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
         this.sqlStatement = sqlStatement;
         console.log(this.sqlStatement);
         this.res = null;
@@ -271,10 +294,30 @@ export default {
         this.fetchData();
       });
     },
+    alert() {
+      alert("Display popup for formatted, print-friendly statute here");
+    },
   },
 
   async mounted() {
     this.selectDatabase();
+    window.$vue = this;
   },
 };
 </script>
+
+<style>
+.js-button {
+  position: absolute;
+
+  right: 20px;
+  display: inline-block;
+  cursor: pointer;
+  background: #0d47a1;
+  color: #fff;
+  padding: 3px 5px 3px 5px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: bold;
+}
+</style>
