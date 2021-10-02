@@ -152,6 +152,14 @@ export default {
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100, 250],
         buttons: ["copy", "excel", "pdf", "print"],
+
+        language: {
+          search: "Filter results: ",
+          info: "Showing _START_ to _END_ of _TOTAL_ results",
+        },
+        oLanguage: {
+          sLengthMenu: "Show _MENU_ results",
+        },
       });
       window.NProgress.done();
     },
