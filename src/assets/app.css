@@ -44,6 +44,10 @@
   font-weight: bold;
 }
 
+.dataTables_length {
+  margin-right: 15px;
+}
+
 .dataTables_info,
 .dataTables_paginate {
   font-size: 12px;
