@@ -236,8 +236,9 @@ export default {
         this.queryTime = after - before;
         this.$gtag.event("repl", {
           event_category: "sqlStatement",
-          event_label: this.sqlStatement,
+          event_label: JSON.stringify(this.sqlStatement),
         });
+
         this.buildResultsTable();
       } catch (err) {
         console.log(err);
