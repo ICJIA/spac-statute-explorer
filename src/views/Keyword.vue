@@ -144,21 +144,16 @@ export default {
           // eslint-disable-next-line no-unused-vars
           .map((cell, idx) => {
             let col = columnNames[idx].replace(new RegExp("<[^>]*>", "g"), "");
-
             let result;
-            //TODO: Add format button here for 'Statute Text'
-            // if (col === "Statute Text") {
-            //   result = `<td class="px-4 py-12"><span class="">${cell}</span><div style="margin-top: 5px !important;"></div><div class="js-button" onclick="window.$vue.alert(ID)">Format statute <i class="fas fa-align-justify"></i></div></td>`;
-            // } else {
-            //   result = `<td>${cell}</td>`;
-            // }
-
             if (col === "Statute Text") {
               let text = cell;
               let formattedText = text
                 .replace(/@0@/gi, "\n\n")
-                .replace(/@1@/gi, "\n\n&nbsp;&nbsp;")
-                .replace(/@2@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;");
+                .replace(/@1@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;")
+                .replace(
+                  /@2@/gi,
+                  "\n\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                );
 
               result = `<td class="px-4 py-2"><pre>${formattedText}</pre></td>`;
             } else {
@@ -178,9 +173,7 @@ export default {
             </tr>
           </thead>
           <tbody>
-            
-                ${rows.join("")}
-              
+              ${rows.join("")}
           </tbody>
         </table>
       </div>`;
@@ -192,7 +185,6 @@ export default {
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100, 250],
         buttons: ["copy", "excel", "pdf", "print"],
-
         language: {
           search: "Filter results: ",
           info: "Showing _START_ to _END_ of _TOTAL_ results",
@@ -205,7 +197,6 @@ export default {
     },
     execute() {
       this.loading = true;
-
       this.fetchData();
     },
     async selectDatabase() {
@@ -225,9 +216,7 @@ export default {
       const el = document.getElementById("results");
       el.innerHTML = `Building results table ...`;
       window.NProgress.start();
-
       const before = Date.now();
-
       try {
         const res = await this.db.exec(this.sqlStatement);
         console.log("db queried");
@@ -239,17 +228,16 @@ export default {
           return;
         }
         this.res = res[0];
-
         this.columns = res[0].columns;
         this.values = res[0].values;
         this.queryLength = res[0].values.length;
         this.loading = false;
         const after = Date.now();
         this.queryTime = after - before;
-        // this.$gtag.event("repl", {
-        //   event_category: "sqlStatement",
-        //   event_label: this.sqlStatement,
-        // });
+        this.$gtag.event("repl", {
+          event_category: "sqlStatement",
+          event_label: this.sqlStatement,
+        });
         this.buildResultsTable();
       } catch (err) {
         console.log(err);
@@ -258,7 +246,6 @@ export default {
         el.innerHTML = "";
         this.loading = false;
       }
-
       window.NProgress.done();
     },
     async initialize() {
@@ -329,6 +316,8 @@ pre {
   white-space: pre-wrap;
   background: transparent !important;
   font-size: 12px !important;
+  display: table;
+  border-collapse: separate;
 }
 
 table td,
