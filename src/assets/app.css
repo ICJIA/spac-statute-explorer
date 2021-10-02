@@ -37,7 +37,8 @@
 }
 
 .dataTables_length,
-.dataTables_filter {
+.dataTables_filter,
+.dt-buttons {
   font-size: 12px;
   margin-bottom: 10px;
   font-weight: bold;

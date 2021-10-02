@@ -148,6 +148,9 @@ export default {
       console.log("db table built");
       window.$("#myTable").DataTable({
         responsive: true,
+
+        dom: "Bfrtip",
+        buttons: ["copy", "excel", "pdf"],
       });
       window.NProgress.done();
     },
