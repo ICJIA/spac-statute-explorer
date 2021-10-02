@@ -3,19 +3,18 @@
     <v-row>
       <v-col>
         <div v-if="ready">
-          <v-select
-            :items="databases"
+          <v-text-field
+            v-model="keyword"
             filled
-            label="Select a database"
-            v-model="database"
-            v-on:change="selectDatabase()"
-          ></v-select>
+            label="Keyword search (Must be more than 3 characters)"
+            v-on:keyup="buildSqlStatement(keyword)"
+          ></v-text-field>
           <v-textarea
             v-model="sqlStatement"
             name="input"
             class="mt-5"
             ref="sql"
-            label="Enter SQL"
+            label="SQL"
             outlined
           ></v-textarea>
         </div>
@@ -49,12 +48,20 @@
           <div
             v-if="queryTime && res && !err"
             style="font-size: 12px"
-            class="mr-2 mt-12 text-right"
+            class="mr-2 mt-12 d-flex"
           >
+            <span v-if="keyword.length">
+              Keyword
+              <strong
+                ><span style="color: red">&nbsp;{{ keyword }}</span></strong
+              ></span
+            >
+            <v-spacer></v-spacer>
             Database
-            <strong>{{ database }}</strong> / Query
-            <strong>{{ queryTime }}ms</strong> / Rows
-            <strong>{{ queryLength }}</strong>
+            <strong>&nbsp;{{ database }}</strong
+            >&nbsp;/&nbsp;Query
+            <strong>&nbsp;{{ queryTime }}ms</strong>&nbsp;/&nbsp;Rows
+            <strong>&nbsp;{{ queryLength }}</strong>
           </div>
           <div id="results" class="mt-6"></div>
         </div>
@@ -74,7 +81,7 @@ export default {
       databases: ["statutes.db", "chinook.db"],
       res: null,
       err: null,
-      sqlStatement: "select * from sqlite_master where type='table'",
+      sqlStatement: null,
       db: null,
       columns: null,
       values: null,
@@ -83,7 +90,10 @@ export default {
       loading: null,
       ready: false,
       status: null,
+      defaultKeyword: "cannabis",
+      keyword: "cannabis",
       database: "statutes.db",
+      defaultSelect: ` `,
     };
   },
 
@@ -92,6 +102,7 @@ export default {
       this.sqlStatement = "select * from sqlite_master where type='table'";
       this.loading = true;
       this.fetchData();
+      this.keyword = "";
     },
 
     trim(val) {
@@ -99,17 +110,19 @@ export default {
       return val.toString().replace(/^\s+|\s+$/g, "");
     },
     reset() {
-      this.sqlStatement = "select * from sqlite_master where type='table'";
       this.res = null;
       this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = "";
+      this.keyword = "cannabis";
+      this.sqlStatement = this.buildSqlStatement(this.keyword);
     },
     clear() {
       this.sqlStatement = "";
       this.res = null;
       this.err = null;
       const el = document.getElementById("results");
+      this.keyword = "";
       el.innerHTML = "";
     },
     buildResultsTable() {
@@ -149,6 +162,7 @@ export default {
     },
     execute() {
       this.loading = true;
+
       this.fetchData();
     },
     async selectDatabase() {
@@ -158,13 +172,9 @@ export default {
       const el = document.getElementById("results");
       el.innerHTML = "";
       window.NProgress.start();
-      console.log("selected database: ", this.database);
-      this.$gtag.event("selectDatabase", {
-        event_category: "database",
-        event_label: this.database,
-      });
+
       await this.initialize();
-      this.fetchData();
+      // this.fetchData();
       window.NProgress.done();
     },
     async fetchData() {
@@ -175,37 +185,36 @@ export default {
 
       const before = Date.now();
 
-      this.$nextTick(async () => {
-        try {
-          const res = await this.db.exec(this.sqlStatement);
-          console.log("db queried");
-          if (!res.length) {
-            console.log("no results");
-            this.err = "No results";
-            el.innerHTML = ``;
-            return;
-          }
-          this.res = res[0];
-
-          this.columns = res[0].columns;
-          this.values = res[0].values;
-          this.queryLength = res[0].values.length;
-          this.loading = false;
-          const after = Date.now();
-          this.queryTime = after - before;
-          this.$gtag.event("repl", {
-            event_category: "sqlStatement",
-            event_label: this.sqlStatement,
-          });
-          this.buildResultsTable();
-        } catch (err) {
-          console.log(err);
-          this.err = err;
+      try {
+        const res = await this.db.exec(this.sqlStatement);
+        console.log("db queried");
+        if (!res.length) {
+          console.log("no results");
+          this.err = "No results";
+          el.innerHTML = ``;
           window.NProgress.done();
-          el.innerHTML = "";
-          this.loading = false;
+          return;
         }
-      });
+        this.res = res[0];
+
+        this.columns = res[0].columns;
+        this.values = res[0].values;
+        this.queryLength = res[0].values.length;
+        this.loading = false;
+        const after = Date.now();
+        this.queryTime = after - before;
+        // this.$gtag.event("repl", {
+        //   event_category: "sqlStatement",
+        //   event_label: this.sqlStatement,
+        // });
+        this.buildResultsTable();
+      } catch (err) {
+        console.log(err);
+        this.err = err;
+        window.NProgress.done();
+        el.innerHTML = "";
+        this.loading = false;
+      }
 
       window.NProgress.done();
     },
@@ -228,8 +237,23 @@ export default {
         el.innerHTML = "";
         this.loading = false;
       }
-      this.sqlStatement = "select * from sqlite_master where type='table'";
+      this.buildSqlStatement(this.defaultKeyword);
       this.ready = true;
+    },
+    buildSqlStatement(keyword) {
+      if (keyword.length < 4) return;
+
+      this.$nextTick(() => {
+        let sqlStatement = `select mandatoryMinimums, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
+        this.sqlStatement = sqlStatement;
+        console.log(this.sqlStatement);
+        this.res = null;
+        this.err = null;
+        const el = document.getElementById("results");
+        el.innerHTML = "";
+        this.loading = true;
+        this.fetchData();
+      });
     },
   },
 

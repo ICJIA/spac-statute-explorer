@@ -23,7 +23,10 @@
         ></v-toolbar-title
       >
       <v-spacer></v-spacer>
+      <v-btn text to="/">SQL QUERY</v-btn>
+      <v-btn text to="/keyword/">Keyword query</v-btn>
       <v-btn
+        class="mr-12"
         text
         href="https://github.com/ICJIA/spac-statute-explorer"
         rel="noopener"
