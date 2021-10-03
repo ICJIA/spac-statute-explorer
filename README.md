@@ -11,6 +11,8 @@
 ## Project setup
 
 ```
+git clone https://github.com/ICJIA/spac-statute-explorer
+cd spac-statute-explorer
 npm install
 ```
 
