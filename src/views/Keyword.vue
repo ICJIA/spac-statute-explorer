@@ -69,8 +69,12 @@
           >
         </div>
 
-        <pre class="error mt-5" v-if="err && ready">{{ err.toString() }}</pre>
-        <pre class="error mt-5" v-if="status && ready">No results</pre>
+        <pre class="error mt-5" v-if="err && ready" style="width: 100%">{{
+          err.toString()
+        }}</pre>
+        <pre class="error mt-5" v-if="status && ready" style="width: 100%">
+No results</pre
+        >
 
         <div>
           <div
@@ -356,7 +360,7 @@ export default {
       if (keyword.length < 4) return;
 
       this.$nextTick(() => {
-        let sqlStatement = `select id, statute, mandatoryMinimums, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
+        let sqlStatement = `select id, statute, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
         this.$gtag.event("keywordSearch", {
           event_category: "sqlStatement",
           event_label: this.keyword,

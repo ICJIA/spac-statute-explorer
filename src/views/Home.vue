@@ -67,8 +67,12 @@
             >Execute SQL<v-icon right large>arrow_right</v-icon></v-btn
           >
         </div>
-        <pre class="error mt-5" v-if="err && ready">{{ err.toString() }}</pre>
-        <pre class="error mt-5" v-if="status && ready">No results</pre>
+        <pre class="error mt-5" v-if="err && ready" style="width: 100%">{{
+          err.toString()
+        }}</pre>
+        <pre class="error mt-5" v-if="status && ready" style="width: 100%">
+No results</pre
+        >
 
         <div>
           <div
