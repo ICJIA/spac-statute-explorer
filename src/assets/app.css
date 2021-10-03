@@ -104,3 +104,11 @@ table td,
 table td * {
   vertical-align: top;
 }
+
+.column {
+  font-weight: bold;
+  cursor: pointer;
+}
+.column:hover {
+  text-decoration: underline !important;
+}

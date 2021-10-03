@@ -33,6 +33,7 @@
             class="mt-10"
             ref="sql"
             label="Enter SQL here"
+            hint="Press Enter to execute query"
             outlined
           ></v-textarea>
         </div>
@@ -56,7 +57,7 @@
             Initializing. Please wait...
           </div>
         </div>
-        <div class="d-flex" v-if="ready">
+        <div class="d-flex mt-4" v-if="ready">
           <v-btn small class="mr-2" @click="listTables()"
             >Show all tables</v-btn
           >
@@ -101,6 +102,7 @@ No results</pre
 <script>
 import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
+let FileSaver = require("file-saver");
 export default {
   name: "Home",
   watch: {},
@@ -130,7 +132,6 @@ export default {
 
   methods: {
     buildMessageTop() {
-      console.log("test");
       const messageTop = `${this.metadata.message} | Timestamp: ${this.metadata.timestamp}`;
       return messageTop;
     },
@@ -169,13 +170,20 @@ export default {
         return `<th>${col}</th>`;
       });
 
+      // let columnToggles = this.columns.map((col, idx) => {
+      //   return `<a class="toggle-vis column" data-column="${idx}">${col}</a>&nbsp;&nbsp;&nbsp;`;
+      // });
+
       let rows = this.values.map((row) => {
         return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
       });
 
       const table = `
       <div style="" >
-        <table style="font-size: 12px" border="1" class="pt-6 px-3" id="myTable">
+         <div style="font-size: 12px; background: #fff; padding: 3px; margin-top: -23px; padding: 5px;" class="mb-12">
+            
+        <table style="font-size: 12px; width: 100% !important;" border="1" class="pt-6 px-3; " id="myTable">
+      
           <thead>
             <tr>
               ${columnNames.join("")}
@@ -190,17 +198,18 @@ export default {
       </div>`;
       el.innerHTML = table;
       console.log("db table built");
-      let FileSaver = require("file-saver");
-      window.$("#myTable").DataTable({
+
+      // eslint-disable-next-line no-unused-vars
+      let myTable = window.$("#myTable").DataTable({
         responsive: true,
         dom: "iBfrtlp",
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100, 250],
         buttons: [
           {
-            extend: "copy",
+            extend: "copyHtml5",
             text: "Copy",
-            messageTop: window.$vue.buildMessageTop(),
+            titleAttr: "Copy",
           },
           {
             extend: "excel",
@@ -233,6 +242,14 @@ export default {
               stripHtml: true,
             },
           },
+          "colvis",
+          {
+            text: "Reload&nbsp;&nbsp;<i class='fa fa-refresh'></i>",
+
+            action: function () {
+              window.$vue.execute();
+            },
+          },
         ],
         language: {
           search: "Filter results: ",
@@ -242,10 +259,20 @@ export default {
           sLengthMenu: "Show _MENU_ results per page",
         },
       });
+      window.$("a.toggle-vis").on("click", function (e) {
+        e.preventDefault();
+
+        // Get the column API object
+        var column = myTable.column(window.$(this).attr("data-column"));
+
+        // Toggle the visibility
+        column.visible(!column.visible());
+      });
       window.NProgress.done();
     },
     execute() {
       this.loading = true;
+      this.metadata.timestamp = new Date().toLocaleString();
       this.fetchData();
     },
     async selectDatabase() {
@@ -335,6 +362,18 @@ export default {
   async mounted() {
     this.selectDatabase();
     window.$vue = this;
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        this.execute();
+      }
+    });
+  },
+  beforeDestroy() {
+    document.removeEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        this.execute();
+      }
+    });
   },
 };
 </script>
