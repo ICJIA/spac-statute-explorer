@@ -10,6 +10,24 @@
             v-on:keyup="buildSqlStatement(keyword)"
             style="font-weight: bold !important"
           ></v-text-field>
+          <v-container fluid style="padding: 0; margin: 0; margin-top: 0px"
+            ><v-row>
+              <v-col cols="12" md="8">
+                <v-text-field
+                  v-model="metadata.message"
+                  hint="Must (re)execute query in order to apply updated header"
+                  label="Header message for exports"
+                  style="font-size: 12px; font-weight: bold"
+                ></v-text-field> </v-col
+              ><v-col cols="12" md="4">
+                <v-text-field
+                  v-model="metadata.timestamp"
+                  disabled
+                  label="Query timestamp"
+                  style="font-size: 12px; font-weight: bold"
+                ></v-text-field> </v-col></v-row
+          ></v-container>
+
           <v-textarea
             v-model="sqlStatement"
             name="input"
@@ -20,7 +38,7 @@
           ></v-textarea>
         </div>
 
-        <div v-if="!ready" style="height: 200px" class="text-center">
+        <div v-if="!ready" style="height: 200px" class="mt-12 text-center">
           <v-progress-circular
             indeterminate
             color="purple darken-4"
@@ -31,7 +49,7 @@
             Initializing SPAC Statute Explorer. Please wait...
           </div>
         </div>
-        <div class="d-flex" v-if="ready">
+        <div class="d-flex mt-0" v-if="ready">
           <v-btn small class="mr-2" @click="listTables()"
             >Show all tables</v-btn
           >
@@ -42,6 +60,7 @@
             >Execute SQL<v-icon right large>arrow_right</v-icon></v-btn
           >
         </div>
+
         <pre class="error mt-5" v-if="err && ready">{{ err.toString() }}</pre>
         <pre class="error mt-5" v-if="status && ready">No results</pre>
 
@@ -61,7 +80,7 @@
             Database
             <strong>&nbsp;{{ database }}</strong
             >&nbsp;/&nbsp;Query
-            <strong>&nbsp;{{ queryTime }}ms</strong>&nbsp;/&nbsp;Rows
+            <strong>&nbsp;{{ queryTime }}ms</strong>&nbsp;/&nbsp;Rows returned
             <strong>&nbsp;{{ queryLength }}</strong>
           </div>
           <div
@@ -100,10 +119,22 @@ export default {
       keyword: "cannabis",
       database: "statutes.db",
       defaultSelect: ` `,
+
+      metadata: {
+        message:
+          "This is a custom header message and will appear on exported files",
+        timestamp: null,
+      },
+      messageTop: null,
     };
   },
 
   methods: {
+    buildMessageTop() {
+      console.log("test");
+      const messageTop = `${this.metadata.message} | Timestamp: ${this.metadata.timestamp}`;
+      return messageTop;
+    },
     listTables() {
       this.sqlStatement = "select * from sqlite_master where type='table'";
       this.loading = true;
@@ -121,6 +152,8 @@ export default {
       const el = document.getElementById("results");
       el.innerHTML = "";
       this.keyword = "cannabis";
+      this.metadata.message =
+        "This is a custom header message and will appear on exported files";
       this.sqlStatement = this.buildSqlStatement(this.keyword);
     },
     clear() {
@@ -133,6 +166,7 @@ export default {
     },
     buildResultsTable() {
       window.NProgress.start();
+
       const el = document.getElementById("results");
 
       let columnNames = this.columns.map((col) => {
@@ -166,7 +200,7 @@ export default {
       });
 
       const table = `
-      <div style="overflow-y: auto; overflow-x: auto;" >
+      <div style="" >
         <table style="font-size: 12px" border="1" class="pt-6 px-3" id="myTable">
           <thead>
             <tr>
@@ -183,13 +217,26 @@ export default {
       let FileSaver = require("file-saver");
       window.$("#myTable").DataTable({
         responsive: true,
-        dom: "lBfrtip",
+        dom: "iBfrtlp",
+
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100, 250],
         buttons: [
-          "copy",
-          "excel",
-          "pdf",
+          {
+            extend: "copy",
+            text: "Copy",
+            messageTop: window.$vue.buildMessageTop(),
+          },
+          {
+            extend: "excel",
+            text: "Excel",
+            messageTop: window.$vue.buildMessageTop(),
+          },
+          {
+            extend: "pdfHtml5",
+            text: "PDF",
+            messageTop: window.$vue.buildMessageTop(),
+          },
 
           {
             text: "JSON",
@@ -206,17 +253,18 @@ export default {
             extend: "print",
             text: "Print",
             autoPrint: false,
+            messageTop: window.$vue.messageTop,
             exportOptions: {
               stripHtml: true,
             },
           },
         ],
         language: {
-          search: "Filter results: ",
-          info: "Showing _START_ to _END_ of _TOTAL_ results",
+          search: "Filter: ",
+          info: "Showing _START_ to _END_ of _TOTAL_ results  ",
         },
         oLanguage: {
-          sLengthMenu: "Show _MENU_ results",
+          sLengthMenu: "Show _MENU_ results per page",
         },
       });
       window.NProgress.done();
@@ -254,6 +302,9 @@ export default {
           return;
         }
         this.res = res[0];
+        this.metadata.timestamp = new Date().toLocaleString();
+        this.res.metadata = this.metadata;
+        this.messageTop = this.buildMessageTop();
         this.columns = res[0].columns;
         this.values = res[0].values;
         this.queryLength = res[0].values.length;
@@ -312,9 +363,6 @@ export default {
         this.fetchData();
       });
     },
-    alert() {
-      alert("Display popup for formatted, print-friendly statute here");
-    },
   },
 
   async mounted() {
@@ -324,31 +372,4 @@ export default {
 };
 </script>
 
-<style>
-.js-button {
-  position: absolute;
-  right: 20px;
-  display: inline-block;
-  cursor: pointer;
-  background: #0d47a1;
-  color: #fff;
-  padding: 3px 5px 3px 5px;
-  border-radius: 8px;
-  font-size: 10px;
-  font-weight: bold;
-}
-
-pre {
-  font-family: "Roboto", sans-serif !important;
-  white-space: pre-wrap;
-  background: transparent !important;
-  font-size: 12px !important;
-  display: table;
-  border-collapse: separate;
-}
-
-table td,
-table td * {
-  vertical-align: top;
-}
-</style>
+<style></style>

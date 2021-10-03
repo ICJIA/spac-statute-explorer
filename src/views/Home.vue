@@ -10,6 +10,23 @@
             v-model="database"
             v-on:change="selectDatabase()"
           ></v-select>
+          <v-container fluid style="padding: 0; margin: 0; margin-top: 0px"
+            ><v-row>
+              <v-col cols="12" md="8">
+                <v-text-field
+                  v-model="metadata.message"
+                  hint="Must (re)execute query in order to apply updated header"
+                  label="Header message for exports"
+                  style="font-size: 12px; font-weight: bold"
+                ></v-text-field> </v-col
+              ><v-col cols="12" md="4">
+                <v-text-field
+                  v-model="metadata.timestamp"
+                  disabled
+                  label="Query timestamp"
+                  style="font-size: 12px; font-weight: bold"
+                ></v-text-field> </v-col></v-row
+          ></v-container>
           <v-textarea
             v-model="sqlStatement"
             name="input"
@@ -49,17 +66,18 @@
           <div
             v-if="queryTime && res && !err"
             style="font-size: 12px"
-            class="mr-2 mt-12 text-right"
+            class="mr-2 mt-12 d-flex"
           >
+            <v-spacer></v-spacer>
             Database
-            <strong>{{ database }}</strong> / Query
-            <strong>{{ queryTime }}ms</strong> / Rows
-            <strong>{{ queryLength }}</strong>
+            <strong>&nbsp;{{ database }}</strong
+            >&nbsp;/&nbsp;Query
+            <strong>&nbsp;{{ queryTime }}ms</strong>&nbsp;/&nbsp;Rows returned
+            <strong>&nbsp;{{ queryLength }}</strong>
           </div>
           <div
             id="results"
             class="mt-6 pt-6"
-            style=""
             :class="{ divider: ready && res }"
           ></div>
         </div>
@@ -89,10 +107,21 @@ export default {
       ready: false,
       status: null,
       database: "statutes.db",
+      metadata: {
+        message:
+          "This is a custom header message and will appear on exported files",
+        timestamp: null,
+      },
+      messageTop: null,
     };
   },
 
   methods: {
+    buildMessageTop() {
+      console.log("test");
+      const messageTop = `${this.metadata.message} | Timestamp: ${this.metadata.timestamp}`;
+      return messageTop;
+    },
     listTables() {
       this.sqlStatement = "select * from sqlite_master where type='table'";
       this.loading = true;
@@ -109,6 +138,8 @@ export default {
       this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = "";
+      this.metadata.message =
+        "This is a custom header message and will appear on exported files";
     },
     clear() {
       this.sqlStatement = "";
@@ -130,7 +161,7 @@ export default {
       });
 
       const table = `
-      <div style="overflow-y: auto; overflow-x: auto;" >
+      <div style="" >
         <table style="font-size: 12px" border="1" class="pt-6 px-3" id="myTable">
           <thead>
             <tr>
@@ -149,13 +180,25 @@ export default {
       let FileSaver = require("file-saver");
       window.$("#myTable").DataTable({
         responsive: true,
-        dom: "lBfrtip",
+        dom: "iBfrtlp",
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100, 250],
         buttons: [
-          "copy",
-          "excel",
-          "pdf",
+          {
+            extend: "copy",
+            text: "Copy",
+            messageTop: window.$vue.buildMessageTop(),
+          },
+          {
+            extend: "excel",
+            text: "Excel",
+            messageTop: window.$vue.buildMessageTop(),
+          },
+          {
+            extend: "pdfHtml5",
+            text: "PDF",
+            messageTop: window.$vue.buildMessageTop(),
+          },
 
           {
             text: "JSON",
@@ -172,6 +215,7 @@ export default {
             extend: "print",
             text: "Print",
             autoPrint: false,
+            messageTop: window.$vue.messageTop,
             exportOptions: {
               stripHtml: true,
             },
@@ -182,7 +226,7 @@ export default {
           info: "Showing _START_ to _END_ of _TOTAL_ results",
         },
         oLanguage: {
-          sLengthMenu: "Show _MENU_ results",
+          sLengthMenu: "Show _MENU_ results per page",
         },
       });
       window.NProgress.done();
@@ -226,7 +270,9 @@ export default {
             return;
           }
           this.res = res[0];
-
+          this.metadata.timestamp = new Date().toLocaleString();
+          this.res.metadata = this.metadata;
+          this.messageTop = this.buildMessageTop();
           this.columns = res[0].columns;
           this.values = res[0].values;
           this.queryLength = res[0].values.length;
