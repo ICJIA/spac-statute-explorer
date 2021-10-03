@@ -390,15 +390,15 @@ export default {
     },
     buildSqlStatement(keyword) {
       if (keyword.length < 4) return;
-
+      this.$gtag.event("keywordSearch", {
+        event_category: "sqlStatement",
+        event_label: keyword,
+      });
+      //console.log(keyword);
       this.$nextTick(() => {
         let sqlStatement = `select id, statute, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
-        this.$gtag.event("keywordSearch", {
-          event_category: "sqlStatement",
-          event_label: this.keyword,
-        });
         this.sqlStatement = sqlStatement;
-        console.log(this.sqlStatement);
+        //console.log(this.sqlStatement);
         this.res = null;
         this.err = null;
         const el = document.getElementById("results");
