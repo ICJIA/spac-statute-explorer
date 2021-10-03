@@ -63,7 +63,7 @@
           <v-spacer></v-spacer>
           <v-btn small outlined class="mr-2" @click="clear()">Clear</v-btn>
           <v-btn small class="mr-2" @click="reset()">Reset</v-btn>
-          <v-btn small @click="execute()" dark color="blue darken-4"
+          <v-btn small @click="execute()" dark color="purple darken-4"
             >Execute SQL<v-icon right large>arrow_right</v-icon></v-btn
           >
         </div>
