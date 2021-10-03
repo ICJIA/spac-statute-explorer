@@ -245,22 +245,24 @@ export default {
           {
             extend: "copyHtml5",
             text: "Copy",
-            titleAttr: "Copy",
+            titleAttr: "Copy to clipboard",
           },
           {
             extend: "excel",
             text: "Excel",
             messageTop: window.$vue.buildMessageTop(),
+            titleAttr: "Save as Excel",
           },
           {
             extend: "pdfHtml5",
             text: "PDF",
             messageTop: window.$vue.buildMessageTop(),
+            titleAttr: "Save as PDF",
           },
 
           {
             text: "JSON",
-
+            titleAttr: "Save as JSON",
             action: function () {
               let filename = `statute-explorer-${Date.now()}.json`;
               let file = new File([JSON.stringify(window.$vue.res)], filename, {
@@ -272,16 +274,21 @@ export default {
           {
             extend: "print",
             text: "Print",
+            titleAttr: "Show Print friendly version",
             autoPrint: false,
             messageTop: window.$vue.messageTop,
             exportOptions: {
               stripHtml: true,
             },
           },
-          "colvis",
+          {
+            extend: "colvis",
+
+            titleAttr: "Toggle table columns on or off",
+          },
           {
             text: "Reload&nbsp;&nbsp;<i class='fa fa-refresh'></i>",
-
+            titleAttr: "Reload SQL query",
             action: function () {
               window.$vue.execute();
             },
