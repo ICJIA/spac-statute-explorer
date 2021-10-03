@@ -22,6 +22,20 @@
   right: 15px;
 }
 
+#nprogress .peg {
+  display: none;
+  position: absolute;
+  right: 0px;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px rgb(86, 15, 128), 0 0 5px rgb(155, 11, 148);
+  opacity: 1;
+
+  -webkit-transform: rotate(3deg) translate(0px, -4px);
+  -ms-transform: rotate(3deg) translate(0px, -4px);
+  transform: rotate(3deg) translate(0px, -4px);
+}
+
 #nprogress .spinner-icon {
   width: 30px;
   height: 30px;
