@@ -3,11 +3,11 @@
 }
 
 #nprogress .bar {
-  background: red;
+  background: purple;
 
   position: fixed;
   z-index: 1031;
-  top: 64px;
+  top: 92px;
   left: 0;
 
   width: 100%;
@@ -18,7 +18,7 @@
   display: block;
   position: fixed;
   z-index: 1031;
-  top: 12px;
+  top: 30px;
   right: 15px;
 }
 
@@ -28,8 +28,8 @@
   box-sizing: border-box;
 
   border: solid 2px transparent;
-  border-top-color: red;
-  border-left-color: red;
+  border-top-color: purple;
+  border-left-color: purple;
   border-radius: 50%;
 
   -webkit-animation: nprogress-spinner 400ms linear infinite;

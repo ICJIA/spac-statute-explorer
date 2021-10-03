@@ -48,9 +48,8 @@
           </div>
           <div style="margin-top: -20px">
             <img
-              :src="require('../assets/loading.gif')"
+              :src="require('../assets/spac-loader.gif')"
               alt="Loading indicator"
-              width="100"
             />
           </div>
 

@@ -1,14 +1,14 @@
 <template>
   <v-app>
-    <v-app-bar app color="blue darken-4" dark>
+    <v-app-bar app color="grey lighten-4" height="90">
       <div class="d-flex align-center">
         <v-img
-          alt="Vuetify Logo"
+          alt="SPAC Logo"
           class="shrink mr-2"
           contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          :src="require('./assets/spac-purple-default-min.png')"
           transition="scale-transition"
-          width="40"
+          width="80"
         />
       </div>
       <v-toolbar-title
@@ -18,24 +18,28 @@
             $vuetify.goTo(0);
           })
         "
-        ><span style="font-weight: 900 !important" class="agency ml-3"
+        ><span
+          style="font-weight: 900 !important; color: #333; font-size: 24px"
+          class="agency ml-3"
           >ILLINOIS STATUTE EXPLORER TEST</span
         ></v-toolbar-title
       >
       <v-spacer></v-spacer>
-      <v-btn text to="/">SQL QUERY</v-btn>
-      <v-btn text to="/keyword/">Keyword query</v-btn>
+      <v-btn dark text to="/" style="color: #333">SQL QUERY</v-btn>
+      <v-btn dark text to="/keyword/" style="color: #333">Keyword query</v-btn>
       <v-btn
         class="mr-12"
         text
+        dark
         href="https://github.com/ICJIA/spac-statute-explorer"
         rel="noopener"
         target="_blank"
+        style="color: #333"
         >GitHub<v-icon right>open_in_new</v-icon></v-btn
       >
     </v-app-bar>
 
-    <v-main>
+    <v-main class="mt-8">
       <router-view />
     </v-main>
   </v-app>
