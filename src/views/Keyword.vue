@@ -54,7 +54,7 @@
           </div>
 
           <div class="mt-4" style="font-size: 12px; font-weight: bold">
-            Initializing SPAC Statute Explorer. Please wait...
+            Initializing. Please wait...
           </div>
         </div>
         <div class="d-flex mt-0" v-if="ready">
