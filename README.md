@@ -8,6 +8,10 @@
 
 > Full Illinois criminal statute query site coming soon.
 
+## Live Demo
+
+- https://statutes.icjia.cloud/
+
 ## Project setup
 
 ```
@@ -43,10 +47,6 @@ npm run lint
 ### Keyword query
 
 - https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Keyword.vue
-
-## Live Demo
-
-- https://statutes.icjia.cloud/
 
 ## References
 
