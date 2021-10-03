@@ -78,6 +78,7 @@
 <script>
 import initSqlJs from "sql.js";
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
+// import { saveAs } from "file-saver";
 export default {
   name: "Home",
   watch: {},
@@ -179,12 +180,37 @@ export default {
       </div>`;
       el.innerHTML = table;
       console.log("db table built");
+      let FileSaver = require("file-saver");
       window.$("#myTable").DataTable({
         responsive: true,
         dom: "lBfrtip",
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100, 250],
-        buttons: ["copy", "excel", "pdf", "print"],
+        buttons: [
+          "copy",
+          "excel",
+          "pdf",
+
+          {
+            text: "JSON",
+
+            action: function () {
+              let filename = `statute-explorer-${Date.now()}.json`;
+              let file = new File([JSON.stringify(window.$vue.res)], filename, {
+                type: "application/json;charset=utf-8",
+              });
+              FileSaver.saveAs(file);
+            },
+          },
+          {
+            extend: "print",
+            text: "Print",
+            autoPrint: false,
+            exportOptions: {
+              stripHtml: true,
+            },
+          },
+        ],
         language: {
           search: "Filter results: ",
           info: "Showing _START_ to _END_ of _TOTAL_ results",
