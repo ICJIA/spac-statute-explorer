@@ -38,13 +38,22 @@
         </div>
 
         <div v-if="!ready" style="height: 200px" class="text-center">
-          <v-progress-circular
-            indeterminate
-            color="purple darken-4"
-            size="100"
-            class="mt-4"
-          ></v-progress-circular>
-          <div class="mt-3" style="font-size: 12px; font-weight: bold">
+          <div>
+            <img
+              :src="require('../assets/spac-purple-default-min.png')"
+              alt="SPAC logo"
+              width="200"
+            />
+          </div>
+          <div style="margin-top: -20px">
+            <img
+              :src="require('../assets/loading.gif')"
+              alt="Loading indicator"
+              width="100"
+            />
+          </div>
+
+          <div class="mt-4" style="font-size: 12px; font-weight: bold">
             Initializing SPAC Statute Explorer. Please wait...
           </div>
         </div>
@@ -140,6 +149,7 @@ export default {
       el.innerHTML = "";
       this.metadata.message =
         "This is a custom header message and will appear on exported files";
+      this.fetchData();
     },
     clear() {
       this.sqlStatement = "";

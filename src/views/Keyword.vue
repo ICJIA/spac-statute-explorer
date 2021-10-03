@@ -38,14 +38,23 @@
           ></v-textarea>
         </div>
 
-        <div v-if="!ready" style="height: 200px" class="mt-12 text-center">
-          <v-progress-circular
-            indeterminate
-            color="purple darken-4"
-            size="100"
-            class="mt-4"
-          ></v-progress-circular>
-          <div class="mt-5" style="font-size: 12px; font-weight: bold">
+        <div v-if="!ready" style="height: 200px" class="text-center">
+          <div>
+            <img
+              :src="require('../assets/spac-purple-default-min.png')"
+              alt="SPAC logo"
+              width="200"
+            />
+          </div>
+          <div style="margin-top: -20px">
+            <img
+              :src="require('../assets/loading.gif')"
+              alt="Loading indicator"
+              width="100"
+            />
+          </div>
+
+          <div class="mt-4" style="font-size: 12px; font-weight: bold">
             Initializing SPAC Statute Explorer. Please wait...
           </div>
         </div>
