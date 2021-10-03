@@ -31,9 +31,9 @@
           <v-textarea
             v-model="sqlStatement"
             name="input"
-            class="mt-5"
+            class="mt-10"
             ref="sql"
-            label="SQL"
+            label="Enter SQL here"
             outlined
           ></v-textarea>
         </div>
