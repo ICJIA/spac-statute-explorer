@@ -163,7 +163,7 @@ export default {
       el.innerHTML = "";
       this.metadata.message =
         "This is a custom header message and will appear on exported files";
-      this.fetchData();
+      //this.fetchData();
     },
     clear() {
       this.sqlStatement = "";
