@@ -102,7 +102,10 @@
                 ></v-row
               >
               <v-row>
-                <v-col style="background: #fafafa; border: 1px solid #eee">
+                <v-col
+                  style="background: #fafafa; border: 1px solid #eee"
+                  class="mr-2"
+                >
                   <div class="d-flex">
                     <strong>Felonies</strong>
                     <v-spacer></v-spacer>
@@ -151,9 +154,69 @@
                     color="purple darken-3"
                     hide-details
                   ></v-checkbox> </v-col
-                ><v-col> col 2</v-col><v-col> col 3</v-col></v-row
-              ></v-container
-            >
+                ><v-col
+                  style="background: #fafafa; border: 1px solid #eee"
+                  class="mr-2"
+                >
+                  <div class="d-flex">
+                    <strong>Misdemeanors</strong>
+                    <v-spacer></v-spacer>
+
+                    <v-checkbox
+                      v-model="ckMisdemeanorsCheckAll"
+                      label="Check All"
+                      color="purple darken-3"
+                      hide-details
+                      style="margin-top: -5px"
+                    ></v-checkbox>
+                  </div>
+                  <v-checkbox
+                    v-model="misdemeanors.ckClassA"
+                    label="Class A"
+                    color="purple darken-3"
+                    hide-details
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="misdemeanors.ckClassB"
+                    label="Class B"
+                    color="purple darken-3"
+                    hide-details
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="misdemeanors.ckClassC"
+                    label="Class C"
+                    color="purple darken-3"
+                    hide-details
+                  ></v-checkbox> </v-col
+                ><v-col
+                  style="background: #fafafa; border: 1px solid #eee"
+                  class="mr-2"
+                >
+                  <div class="d-flex">
+                    <strong>Miscellaneous</strong>
+                    <v-spacer></v-spacer>
+
+                    <v-checkbox
+                      v-model="ckMiscellaneousCheckAll"
+                      label="Check All"
+                      color="purple darken-3"
+                      hide-details
+                      style="margin-top: -5px"
+                    ></v-checkbox>
+                  </div>
+                  <v-checkbox
+                    v-model="miscellaneous.ckPetty"
+                    label="Class A"
+                    color="purple darken-3"
+                    hide-details
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="miscellaneous.ckBusiness"
+                    label="Class A"
+                    color="purple darken-3"
+                    hide-details
+                  ></v-checkbox></v-col></v-row
+            ></v-container>
 
             <div class="d-flex" style="margin-top: 80px">
               <v-spacer></v-spacer>
@@ -202,6 +265,8 @@ export default {
       ckClass3: false,
       ckClass4: false,
       ckFeloniesCheckAll: false,
+      ckMisdemeanorsCheckAll: false,
+      ckMiscellaneousCheckAll: false,
       felonies: {
         ckMurder: false,
         ckClassX: false,
@@ -209,6 +274,15 @@ export default {
         ckClass2: false,
         ckClass3: false,
         ckClass4: false,
+      },
+      misdemeanors: {
+        ckClassA: false,
+        ckClassB: false,
+        ckClassC: false,
+      },
+      miscellaneous: {
+        ckPetty: false,
+        ckBusiness: false,
       },
     };
   },
@@ -218,12 +292,22 @@ export default {
         this.felonies[key] = newValue;
       }
     },
+    ckMisdemeanorsCheckAll(newValue) {
+      for (const [key] of Object.entries(this.misdemeanors)) {
+        this.misdemeanors[key] = newValue;
+      }
+    },
+    ckMiscellaneousCheckAll(newValue) {
+      for (const [key] of Object.entries(this.miscellaneous)) {
+        this.miscellaneous[key] = newValue;
+      }
+    },
   },
   methods: {
     submit() {
       let builderObj = {
         keyword: this.keyword,
-        cboTIS: this.cboTIS.value,
+        cboTIS: this.cboTIS,
         ckSentenceCS: this.ckSentenceCS,
         ckSentenceFine: this.ckSentenceFine,
         ckSentence1Year: this.ckSentence1Year,
@@ -238,6 +322,11 @@ export default {
         ckClass2: this.felonies.ckClass2,
         ckClass3: this.felonies.ckClass3,
         ckClass4: this.felonies.ckClass4,
+        ckClassA: this.misdemeanors.ckClassA,
+        ckClassB: this.misdemeanors.ckClassB,
+        ckClassC: this.misdemeanors.ckClassC,
+        ckPetty: this.miscellaneous.ckPetty,
+        ckBusiness: this.miscellaneous.ckBusiness,
       };
       this.buildSql(builderObj);
     },
@@ -258,6 +347,11 @@ export default {
       ckClass2,
       ckClass3,
       ckClass4,
+      ckClassA,
+      ckClassB,
+      ckClassC,
+      ckPetty,
+      ckBusiness,
     }) {
       console.log(
         keyword,
@@ -275,7 +369,12 @@ export default {
         ckClass1,
         ckClass2,
         ckClass3,
-        ckClass4
+        ckClass4,
+        ckClassA,
+        ckClassB,
+        ckClassC,
+        ckPetty,
+        ckBusiness
       );
     },
     reset() {
