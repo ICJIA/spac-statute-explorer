@@ -18,7 +18,7 @@ export default new Vuex.Store({
       state.error = payload;
       state.isDbReady = true;
     },
-    setClearErr(state) {
+    setClearError(state) {
       state.error = null;
     },
   },
