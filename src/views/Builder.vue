@@ -41,25 +41,25 @@
                   <v-checkbox
                     v-model="ckSentenceCS"
                     label="Community Service"
-                    color="purple darken-3"
+                    color="grey darken-4"
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
                     v-model="ckSentenceFine"
                     label="Fine"
-                    color="purple darken-3"
+                    color="grey darken-4"
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
                     v-model="ckSentence1Year"
                     label="Imprisonment less than 1 year"
-                    color="purple darken-3"
+                    color="grey darken-4"
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
                     v-model="ckMandIDOC"
                     label="Imprisonment 1 year or more/non-probationable offenses"
-                    color="purple darken-3"
+                    color="grey darken-4"
                     hide-details
                   ></v-checkbox>
                 </v-col>
@@ -68,33 +68,33 @@
                   <v-checkbox
                     v-model="ckRegSexOffender"
                     label="Sex offender registration required"
-                    color="purple darken-3"
+                    color="grey darken-4"
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
                     v-model="ckRegArson"
                     label="Arson registration required"
-                    color="purple darken-3"
+                    color="grey darken-4"
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
                     v-model="ckRegViolentVsChildren"
                     label="Violent offender against youth registration required"
-                    color="purple darken-3"
+                    color="grey darken-4"
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
                     v-model="ckRegMeth"
                     label="Methamphetamine registration required"
-                    color="purple darken-3"
+                    color="grey darken-4"
                     hide-details
                   ></v-checkbox
                 ></v-col>
               </v-row>
             </v-container>
 
-            <v-container fluid class="flush spacer"
-              ><v-row
+            <v-container fluid class="flush spacer">
+              <v-row
                 ><v-col
                   ><div class="builder-header">
                     Select Offense Classes:
@@ -103,142 +103,174 @@
               >
               <v-row>
                 <v-col
-                  style="background: #fafafa; border: 1px solid #eee"
+                  style="
+                    background: #fcfcfc;
+                    border: 1px solid #ddd;
+                    padding: 0;
+                    margin: 0;
+                  "
                   class="mr-2"
                 >
-                  <div class="d-flex">
+                  <div
+                    class="d-flex px-2 py-0 pt-3"
+                    style="background: #666; color: #fff"
+                  >
                     <strong>Felonies</strong>
                     <v-spacer></v-spacer>
 
                     <v-checkbox
                       v-model="ckFeloniesCheckAll"
+                      dark
                       label="Check All"
-                      color="purple darken-3"
+                      color="grey darken-4"
                       hide-details
                       style="margin-top: -5px"
                     ></v-checkbox>
                   </div>
-                  <v-checkbox
-                    v-model="felonies.ckMurder"
-                    label="Murder"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="felonies.ckClassX"
-                    label="Class X"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="felonies.ckClass1"
-                    label="Class 1"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="felonies.ckClass2"
-                    label="Class 2"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="felonies.ckClass3"
-                    label="Class 3"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="felonies.ckClass4"
-                    label="Class 4"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox> </v-col
+                  <div class="px-4 py-2 pb-4">
+                    <v-checkbox
+                      v-model="felonies.ckMurder"
+                      label="Murder"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClassX"
+                      label="Class X"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClass1"
+                      label="Class 1"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClass2"
+                      label="Class 2"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClass3"
+                      label="Class 3"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClass4"
+                      label="Class 4"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox></div></v-col
                 ><v-col
-                  style="background: #fafafa; border: 1px solid #eee"
+                  style="
+                    background: #fcfcfc;
+                    border: 1px solid #ddd;
+                    padding: 0;
+                    margin: 0;
+                  "
                   class="mr-2"
                 >
-                  <div class="d-flex">
+                  <div
+                    class="d-flex px-2 py-0 pt-3"
+                    style="background: #666; color: #fff"
+                  >
                     <strong>Misdemeanors</strong>
                     <v-spacer></v-spacer>
 
                     <v-checkbox
                       v-model="ckMisdemeanorsCheckAll"
                       label="Check All"
-                      color="purple darken-3"
+                      dark
+                      color="grey darken-3"
                       hide-details
                       style="margin-top: -5px"
                     ></v-checkbox>
                   </div>
-                  <v-checkbox
-                    v-model="misdemeanors.ckClassA"
-                    label="Class A"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="misdemeanors.ckClassB"
-                    label="Class B"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="misdemeanors.ckClassC"
-                    label="Class C"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox> </v-col
+                  <div class="px-4 py-2">
+                    <v-checkbox
+                      v-model="misdemeanors.ckClassA"
+                      label="Class A"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="misdemeanors.ckClassB"
+                      label="Class B"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="misdemeanors.ckClassC"
+                      label="Class C"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox></div></v-col
                 ><v-col
-                  style="background: #fafafa; border: 1px solid #eee"
+                  style="
+                    background: #fcfcfc;
+                    border: 1px solid #ddd;
+                    padding: 0;
+                    margin: 0;
+                  "
                   class="mr-2"
                 >
-                  <div class="d-flex">
+                  <div
+                    class="d-flex px-2 py-0 pt-3"
+                    style="background: #666; color: #fff"
+                  >
                     <strong>Miscellaneous</strong>
                     <v-spacer></v-spacer>
 
                     <v-checkbox
                       v-model="ckMiscellaneousCheckAll"
                       label="Check All"
-                      color="purple darken-3"
+                      dark
+                      color="grey darken-4"
                       hide-details
                       style="margin-top: -5px"
                     ></v-checkbox>
                   </div>
-                  <v-checkbox
-                    v-model="miscellaneous.ckPetty"
-                    label="Petty Offenses"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-model="miscellaneous.ckBusiness"
-                    label="Business Expenses"
-                    color="purple darken-3"
-                    hide-details
-                  ></v-checkbox></v-col></v-row
+                  <div class="px-4 py-2">
+                    <v-checkbox
+                      v-model="miscellaneous.ckPetty"
+                      label="Petty Offenses"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="miscellaneous.ckBusiness"
+                      label="Business Expenses"
+                      color="grey darken-4"
+                      hide-details
+                    ></v-checkbox></div></v-col></v-row
             ></v-container>
-
-            <v-row class="mt-8 mb-8" v-if="builderObj">
-              <v-col
-                ><v-textarea
-                  disabled
-                  label=""
-                  filled
-                  :value="JSON.stringify(builderObj).trim()"
-                ></v-textarea></v-col
-            ></v-row>
-
-            <div class="d-flex" style="margin-top: 80px">
-              <v-spacer></v-spacer>
-              <v-btn outlined class="mr-4" @click="reset()"> reset </v-btn>
-              <v-btn
-                dark
-                color="purple darken-4"
-                class="mr-4"
-                @click="submit()"
+            <v-container fluid class="flush spacer">
+              <v-row class="mt-8 mb-8" v-if="builderObj">
+                <v-col>
+                  <v-card
+                    class="px-4 py-4"
+                    elevation="0"
+                    color="grey lighten-4"
+                  >
+                    <div style="font-weight: 900; font-size: 20px" class="mb-3">
+                      Selections
+                    </div>
+                    {{ builderObj }}
+                  </v-card></v-col
+                ></v-row
               >
-                Submit
+            </v-container>
+            <div class="d-flex" style="margin-top: 10px">
+              <v-spacer></v-spacer>
+              <v-btn small outlined class="mr-4" @click="reset()">
+                reset
               </v-btn>
+              <v-btn small @click="submit()" dark color="purple darken-4"
+                >Submit<v-icon right>arrow_right</v-icon></v-btn
+              >
             </div>
           </v-form></v-col
         ></v-row
@@ -252,6 +284,7 @@ export default {
   data() {
     return {
       builderObj: null,
+      debug: false,
       keyword: "",
       cboTIS: 0,
       cboTISItems: [
@@ -398,6 +431,7 @@ export default {
 <style lang="scss" scoped>
 .builder-header {
   font-weight: bold;
+  margin-left: -10px;
 }
 .flush {
   margin: 0;
