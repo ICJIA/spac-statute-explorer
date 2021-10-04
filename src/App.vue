@@ -25,8 +25,9 @@
         ></v-toolbar-title
       >
       <v-spacer></v-spacer>
-      <v-btn dark text to="/" style="color: #333">SQL QUERY</v-btn>
-      <v-btn dark text to="/keyword/" style="color: #333">Keyword query</v-btn>
+
+      <v-btn dark text to="/" style="color: #333">Keyword query</v-btn>
+      <v-btn dark text to="/sql/" style="color: #333">SQL QUERY</v-btn>
       <v-btn
         class="mr-12"
         text
