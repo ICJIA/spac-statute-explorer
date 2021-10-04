@@ -214,7 +214,7 @@ export default {
           .map((cell, idx) => {
             let col = columnNames[idx].replace(new RegExp("<[^>]*>", "g"), "");
             let result;
-            if (col === "Statute Text") {
+            if (col === "StatuteText") {
               let text = cell;
               let formattedText = text
                 .replace(/@0@/gi, "\n\n")
@@ -395,7 +395,7 @@ export default {
       });
       //console.log(keyword);
       this.$nextTick(() => {
-        let sqlStatement = `select id, statute, "Statute Text" from tbl_statutes where "Statute Text" like "%${keyword}%"`;
+        let sqlStatement = `select id, statute, StatuteText from tbl_statutes where StatuteText like "%${keyword}%"`;
         this.sqlStatement = sqlStatement;
         //console.log(this.sqlStatement);
         this.res = null;

@@ -26,7 +26,7 @@
       >
       <v-spacer></v-spacer>
 
-      <v-btn dark text to="/" style="color: #333">Keyword query</v-btn>
+      <v-btn dark text to="/" style="color: #333">Keyword</v-btn>
       <v-btn dark text to="/builder/" style="color: #333">Query builder</v-btn>
       <v-btn dark text to="/sql/" style="color: #333">Raw SQL</v-btn>
       <!-- <v-btn dark text to="/sandbox/" style="color: #333">Sandbox 1</v-btn>
