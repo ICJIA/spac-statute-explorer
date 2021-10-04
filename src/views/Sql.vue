@@ -320,6 +320,7 @@ export default {
         if (!res.length) {
           console.log("no results");
           this.err = "No results";
+          window.NProgress.done();
           el.innerHTML = ``;
           return;
         }
@@ -344,6 +345,7 @@ export default {
         window.NProgress.done();
         el.innerHTML = "";
         this.loading = false;
+        window.NProgress.done();
       }
 
       window.NProgress.done();
