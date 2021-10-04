@@ -6,7 +6,7 @@
           <v-text-field
             v-model="keyword"
             filled
-            label="Keyword search (Must be more than 3 characters)"
+            label="Keyword search"
             v-on:keyup="buildSqlStatement(keyword)"
             style="font-weight: bold !important"
           ></v-text-field>
@@ -133,7 +133,7 @@ export default {
   watch: {},
   data() {
     return {
-      databases: ["statutes.db", "chinook.db"],
+      databases: ["statutes.db"],
       res: null,
       err: null,
       sqlStatement: null,
@@ -347,6 +347,10 @@ export default {
       window.NProgress.done();
     },
     async fetchData() {
+      this.$gtag.event("keywordSearch", {
+        event_category: "sqlStatement",
+        event_label: this.keyword,
+      });
       this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = `Building results table ...`;
@@ -388,11 +392,8 @@ export default {
       this.buildSqlStatement(this.defaultKeyword);
     },
     buildSqlStatement(keyword) {
-      if (keyword.length < 4) return;
-      this.$gtag.event("keywordSearch", {
-        event_category: "sqlStatement",
-        event_label: keyword,
-      });
+      // if (keyword.length < 4) return;
+
       //console.log(keyword);
       this.$nextTick(() => {
         let sqlStatement = `select id, statute, StatuteText from tbl_statutes where StatuteText like "%${keyword}%"`;

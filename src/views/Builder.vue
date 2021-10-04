@@ -221,9 +221,6 @@ export default {
   },
   methods: {
     submit() {
-      console.log("submit here");
-
-      // Object.assign(this, test);
       let builderObj = {
         keyword: this.keyword,
         cboTIS: this.cboTIS.value,
