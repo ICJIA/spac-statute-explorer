@@ -36,6 +36,7 @@
             label="Enter SQL here"
             outlined
             hint="Press 'Enter' to execute SQL"
+            style="font-weight: bold"
           ></v-textarea>
         </div>
 
