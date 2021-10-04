@@ -215,7 +215,14 @@ export default {
             let col = columnNames[idx].replace(new RegExp("<[^>]*>", "g"), "");
             let result;
             if (col === "StatuteText") {
-              let text = cell;
+              let text;
+              if (typeof cell !== "string") {
+                text = "";
+              } else {
+                text = cell;
+              }
+
+              if (typeof text !== "string") console.log("not string");
               let formattedText = text
                 .replace(/@0@/gi, "\n\n")
                 .replace(/@1@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;")
