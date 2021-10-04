@@ -17,6 +17,20 @@ const routes = [
 
     component: () => import(/* webpackChunkName: "about" */ "../views/Sql.vue"),
   },
+  {
+    path: "/sandbox",
+    name: "sandbox",
+
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Sandbox.vue"),
+  },
+  {
+    path: "/sandbox2",
+    name: "sandbox2",
+
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Sandbox2.vue"),
+  },
 ];
 
 const router = new VueRouter({

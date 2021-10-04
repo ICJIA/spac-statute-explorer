@@ -2,7 +2,7 @@
   <v-container class="markdown-body">
     <v-row>
       <v-col>
-        <div v-if="ready">
+        <div v-if="$store.state.isDbReady">
           <v-text-field
             v-model="keyword"
             filled
@@ -39,7 +39,11 @@
           ></v-textarea>
         </div>
 
-        <div v-if="!ready" style="height: 200px" class="text-center">
+        <div
+          v-if="!$store.state.isDbReady"
+          style="height: 200px"
+          class="text-center"
+        >
           <div>
             <img
               :src="require('../assets/spac-purple-default-min.png')"
@@ -58,7 +62,7 @@
             Initializing. Please wait...
           </div>
         </div>
-        <div class="d-flex mt-4" v-if="ready">
+        <div class="d-flex mt-4" v-if="$store.state.isDbReady">
           <v-btn small class="mr-2" @click="listTables()"
             >Show all tables</v-btn
           >
@@ -70,12 +74,23 @@
           >
         </div>
 
-        <pre class="error mt-5" v-if="err && ready" style="width: 100%">{{
-          err.toString()
-        }}</pre>
-        <pre class="error mt-5" v-if="status && ready" style="width: 100%">
+        <pre
+          class="error mt-5"
+          v-if="err && $store.state.isDbReady"
+          style="width: 100%"
+          >{{ err.toString() }}</pre
+        >
+        <pre
+          class="error mt-5"
+          v-if="status && $store.state.isDbReady"
+          style="width: 100%"
+        >
 No results</pre
         >
+
+        <pre class="error mt-5" v-if="$store.state.error" style="width: 100%">{{
+          $store.state.error.toString()
+        }}</pre>
 
         <div>
           <div
@@ -100,7 +115,7 @@ No results</pre
           <div
             id="results"
             class="mt-6 pt-6"
-            :class="{ divider: ready && res }"
+            :class="{ divider: $store.state.isDbReady && res }"
           ></div>
         </div>
       </v-col>
@@ -109,8 +124,9 @@ No results</pre
 </template>
 
 <script>
-import initSqlJs from "sql.js";
-import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
+// import initSqlJs from "sql.js";
+// import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
+const FileSaver = require("file-saver");
 // import { saveAs } from "file-saver";
 export default {
   name: "Home",
@@ -169,6 +185,7 @@ export default {
       this.metadata.message =
         "This is a custom header message and will appear on exported files";
       this.sqlStatement = this.buildSqlStatement(this.keyword);
+      this.$store.commit("setClearError");
     },
     clear() {
       this.sqlStatement = "";
@@ -233,7 +250,7 @@ export default {
       </div>`;
       el.innerHTML = table;
       console.log("db table built");
-      let FileSaver = require("file-saver");
+
       // eslint-disable-next-line no-unused-vars
       let myTable = window.$("#myTable").DataTable({
         responsive: true,
@@ -336,7 +353,8 @@ export default {
       window.NProgress.start();
       const before = Date.now();
       try {
-        const res = await this.db.exec(this.sqlStatement);
+        let db = this.$store.state.db;
+        const res = await db.exec(this.sqlStatement);
         console.log("db queried");
         if (!res.length) {
           console.log("no results");
@@ -367,26 +385,7 @@ export default {
       window.NProgress.done();
     },
     async initialize() {
-      this.ready = false;
-      const el = document.getElementById("results");
-      try {
-        const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm });
-        let databasePath = `/${this.database}`;
-        const dataPromise = fetch(databasePath).then((res) =>
-          res.arrayBuffer()
-        );
-        const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
-        const db = new SQL.Database(new Uint8Array(buf));
-        this.db = await db;
-      } catch (err) {
-        console.log(err);
-        this.err = err;
-        window.NProgress.done();
-        el.innerHTML = "";
-        this.loading = false;
-      }
       this.buildSqlStatement(this.defaultKeyword);
-      this.ready = true;
     },
     buildSqlStatement(keyword) {
       if (keyword.length < 4) return;
@@ -404,7 +403,7 @@ export default {
         const el = document.getElementById("results");
         el.innerHTML = "";
         this.loading = true;
-        this.fetchData();
+        //this.fetchData();
       });
     },
   },

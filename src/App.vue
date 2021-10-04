@@ -28,6 +28,8 @@
 
       <v-btn dark text to="/" style="color: #333">Keyword query</v-btn>
       <v-btn dark text to="/sql/" style="color: #333">SQL QUERY</v-btn>
+      <!-- <v-btn dark text to="/sandbox/" style="color: #333">Sandbox 1</v-btn>
+      <v-btn dark text to="/sandbox2/" style="color: #333">Sandbox 2</v-btn> -->
       <v-btn
         class="mr-12"
         text
@@ -47,11 +49,22 @@
 </template>
 
 <script>
+// import { EventBus } from "@/event-bus";
 export default {
   name: "App",
-
-  data: () => ({
-    //
-  }),
+  data() {
+    return {
+      isReady: false,
+    };
+  },
+  watch: {
+    isReady(newValue, oldValue) {
+      console.log("isReady changed", newValue, oldValue);
+    },
+  },
+  created() {
+    console.log("App init");
+  },
+  mounted() {},
 };
 </script>
