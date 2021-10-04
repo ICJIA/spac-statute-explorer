@@ -206,17 +206,27 @@
                   </div>
                   <v-checkbox
                     v-model="miscellaneous.ckPetty"
-                    label="Class A"
+                    label="Petty Offenses"
                     color="purple darken-3"
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
                     v-model="miscellaneous.ckBusiness"
-                    label="Class A"
+                    label="Business Expenses"
                     color="purple darken-3"
                     hide-details
                   ></v-checkbox></v-col></v-row
             ></v-container>
+
+            <v-row class="mt-8 mb-8" v-if="builderObj">
+              <v-col
+                ><v-textarea
+                  disabled
+                  label=""
+                  filled
+                  :value="JSON.stringify(builderObj).trim()"
+                ></v-textarea></v-col
+            ></v-row>
 
             <div class="d-flex" style="margin-top: 80px">
               <v-spacer></v-spacer>
@@ -241,9 +251,9 @@
 export default {
   data() {
     return {
-      valid: true,
+      builderObj: null,
       keyword: "",
-      cboTIS: { text: "No selection", value: 0 },
+      cboTIS: 0,
       cboTISItems: [
         { text: "No selection", value: 0 },
         { text: "100% Sentence", value: 1 },
@@ -305,7 +315,7 @@ export default {
   },
   methods: {
     submit() {
-      let builderObj = {
+      this.builderObj = {
         keyword: this.keyword,
         cboTIS: this.cboTIS,
         ckSentenceCS: this.ckSentenceCS,
@@ -328,7 +338,7 @@ export default {
         ckPetty: this.miscellaneous.ckPetty,
         ckBusiness: this.miscellaneous.ckBusiness,
       };
-      this.buildSql(builderObj);
+      this.buildSql(this.builderObj);
     },
     buildSql({
       keyword,
@@ -379,6 +389,7 @@ export default {
     },
     reset() {
       this.$refs.form.reset();
+      this.builderObj = null;
     },
   },
 };
