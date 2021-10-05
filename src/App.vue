@@ -46,16 +46,22 @@
     <v-main class="mt-8">
       <router-view />
     </v-main>
+    <StatuteModal></StatuteModal>
   </v-app>
 </template>
 
 <script>
 // import { EventBus } from "@/event-bus";
+import StatuteModal from "@/components/StatuteModal";
 export default {
+  components: {
+    StatuteModal,
+  },
   name: "App",
   data() {
     return {
       isReady: false,
+      dialog: true,
     };
   },
   watch: {

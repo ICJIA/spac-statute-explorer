@@ -340,6 +340,7 @@ No results</pre
 
 <script>
 /* eslint-disable no-unused-vars */
+import { EventBus } from "@/event-bus";
 let FileSaver = require("file-saver");
 function doubleScroll(element) {
   var scrollbar = document.createElement("div");
@@ -906,7 +907,28 @@ FROM  (((((((((tbl_Statutes as S`;
       // });
 
       let rows = this.values.map((row) => {
-        return `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`;
+        return `<tr style="display: relative !important;">${row
+          // eslint-disable-next-line no-unused-vars
+          .map((cell, idx) => {
+            let col = columnNames[idx].replace(new RegExp("<[^>]*>", "g"), "");
+            let result;
+            if (col === "Code") {
+              let text;
+              if (typeof cell !== "string") {
+                text = "";
+              } else {
+                text = cell.trim();
+              }
+
+              if (typeof text !== "string") console.log("not string");
+              let formattedText = `<a class="cell-code" onclick="window.$vue.displayStatute('${cell}')">${text}</a>`;
+              result = `<td class="px-4 py-2" ><pre>${formattedText}</pre></td>`;
+            } else {
+              result = `<td class="px-4 py-6"><strong>${cell}</strong></td>`;
+            }
+            return result;
+          })
+          .join("")}</tr>`;
       });
 
       const table = `
@@ -1005,6 +1027,21 @@ FROM  (((((((((tbl_Statutes as S`;
 
       window.NProgress.done();
     },
+    async displayStatute(code) {
+      console.log("fire modal for formatted statute here: ", code);
+      let statuteQuery = `select StatuteText from tbl_statutes where code like '%${code}%'`;
+      try {
+        let db = this.$store.state.db;
+        const res = await db.exec(statuteQuery);
+        let payload = {
+          code: code,
+          response: res,
+        };
+        EventBus.$emit("show-statute", payload);
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 };
 </script>
@@ -1025,5 +1062,12 @@ FROM  (((((((((tbl_Statutes as S`;
 
 table {
   border: 1px solid #ccc !important;
+}
+.cell-code {
+  font-weight: bold;
+}
+
+.cell-code:hover {
+  text-decoration: underline;
 }
 </style>
