@@ -461,6 +461,14 @@ export default {
   },
   methods: {
     submit() {
+      this.res = null;
+      this.err = null;
+      const el = document.getElementById("results");
+      el.innerHTML = "";
+      this.metadata.message =
+        "This is a custom header message and will appear on exported files";
+
+      this.$store.commit("setClearError");
       this.builderObj = {
         keyword: this.keyword,
         cboTIS: this.cboTIS,

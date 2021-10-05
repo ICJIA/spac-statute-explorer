@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="90%">
+  <v-dialog v-model="dialog" width="90%" eager>
     <v-card>
       <v-card-title class="text-h5 grey lighten-2">
         {{ code }}
@@ -8,17 +8,16 @@
           >CLOSE<v-icon right>close</v-icon></v-btn
         >
       </v-card-title>
-
-      <v-card-text class="mt-5 pb-12 pt-2" style="color: #111">
-        <pre v-html="response"></pre>
-      </v-card-text>
-
-      <v-divider></v-divider>
-
-      <!-- <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="dialog = false"> Close </v-btn>
-      </v-card-actions> -->
+      <table id="modal" class="markdown-body" style="width: 100%">
+        <thead></thead>
+        <tbody>
+          <tr>
+            <td style="background: #fff">
+              <pre>{{ response }}</pre>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </v-card>
   </v-dialog>
 </template>
@@ -34,7 +33,7 @@ export default {
       response: null,
     };
   },
-  mounted() {
+  created() {
     EventBus.$on("show-statute", (payload) => {
       this.dialog = true;
       this.code = payload.code;
@@ -48,6 +47,7 @@ export default {
         );
     });
   },
+  mounted() {},
   methods: {},
 };
 </script>
