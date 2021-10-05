@@ -1028,7 +1028,7 @@ FROM  (((((((((tbl_Statutes as S`;
       window
         .$("div.toolbar")
         .html(
-          "<div class='mb-2'><b>Click on 'Code' column to display full statute</b></div>"
+          "<div class='mb-2' style='color: #1b3c60'><b>Click 'Code' to display full statute</b></div>"
         );
       window.NProgress.done();
     },
