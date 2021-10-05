@@ -952,7 +952,7 @@ FROM  (((((((((tbl_Statutes as S`;
       console.log("db table built");
       let myTable = window.$("#myTable").DataTable({
         responsive: false,
-        dom: "iBfrtlp",
+        dom: "<'toolbar'>iBfrtlp",
         autoWidth: false,
         pageLength: 10,
         aLengthMenu: [
@@ -1021,10 +1021,15 @@ FROM  (((((((((tbl_Statutes as S`;
           sLengthMenu: "Show _MENU_ results per page",
         },
       });
+
       this.loading = false;
       window.$("#results").show();
       doubleScroll(document.getElementById("doublescroll"));
-
+      window
+        .$("div.toolbar")
+        .html(
+          "<div class='mb-2'><b>Click on 'Code' column to display full statute</b></div>"
+        );
       window.NProgress.done();
     },
     async displayStatute(code) {
