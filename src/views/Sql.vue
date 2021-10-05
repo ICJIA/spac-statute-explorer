@@ -101,7 +101,7 @@ No results</pre
           </div>
           <div
             id="results"
-            class="mt-6 pt-6"
+            class="mt-0 pt-0"
             :class="{ divider: $store.state.isDbReady && res }"
           ></div>
         </div>
@@ -114,6 +114,36 @@ No results</pre
 // import initSqlJs from "sql.js";
 // import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
 let FileSaver = require("file-saver");
+function doubleScroll(element) {
+  var scrollbar = document.createElement("div");
+  scrollbar.appendChild(document.createElement("div"));
+  scrollbar.style.overflow = "auto";
+  scrollbar.style.overflowY = "hidden";
+  scrollbar.style.marginBottom = "15px";
+  scrollbar.firstChild.style.width = element.scrollWidth + "px";
+  scrollbar.firstChild.style.paddingTop = "1px";
+
+  scrollbar.firstChild.appendChild(document.createTextNode("\xA0"));
+  var running = false;
+  scrollbar.onscroll = function () {
+    if (running) {
+      running = false;
+      return;
+    }
+    running = true;
+    element.scrollLeft = scrollbar.scrollLeft;
+  };
+  element.onscroll = function () {
+    if (running) {
+      running = false;
+      return;
+    }
+    running = true;
+    scrollbar.scrollLeft = element.scrollLeft;
+  };
+  element.parentNode.insertBefore(scrollbar, element);
+}
+
 export default {
   name: "Home",
   watch: {},
@@ -174,6 +204,8 @@ export default {
     },
     buildResultsTable() {
       window.NProgress.start();
+      window.$("#results").hide();
+      this.loading = true;
       const el = document.getElementById("results");
 
       let columnNames = this.columns.map((col) => {
@@ -189,9 +221,7 @@ export default {
       });
 
       const table = `
-      <div style="" >
-         <div style="font-size: 12px; background: #fff; padding: 3px; margin-top: -23px; padding: 5px;" class="mb-12">
-            
+      <div style="overflow-x: auto;" id="doublescroll">
         <table style="font-size: 12px; width: 100% !important;" border="1" class="pt-6 px-3; " id="myTable">
       
           <thead>
@@ -205,16 +235,22 @@ export default {
               
           </tbody>
         </table>
-      </div>`;
+        </div>
+      `;
       el.innerHTML = table;
       console.log("db table built");
 
       // eslint-disable-next-line no-unused-vars
       let myTable = window.$("#myTable").DataTable({
-        responsive: true,
+        responsive: false,
         dom: "iBfrtlp",
-        pageLength: 25,
-        lengthMenu: [10, 25, 50, 100, 250],
+        autoWidth: false,
+        pageLength: 10,
+        aLengthMenu: [
+          [5, 10, 25, 50, 250, -1],
+          [5, 10, 25, 50, 250, "All"],
+        ],
+
         buttons: [
           {
             extend: "copyHtml5",
@@ -252,7 +288,7 @@ export default {
             autoPrint: false,
             messageTop: window.$vue.messageTop,
             exportOptions: {
-              stripHtml: true,
+              columns: ":visible",
             },
           },
           {
@@ -276,15 +312,10 @@ export default {
           sLengthMenu: "Show _MENU_ results per page",
         },
       });
-      window.$("a.toggle-vis").on("click", function (e) {
-        e.preventDefault();
+      this.loading = false;
+      window.$("#results").show();
+      doubleScroll(document.getElementById("doublescroll"));
 
-        // Get the column API object
-        var column = myTable.column(window.$(this).attr("data-column"));
-
-        // Toggle the visibility
-        column.visible(!column.visible());
-      });
       window.NProgress.done();
     },
     execute() {
@@ -377,5 +408,9 @@ export default {
 <style>
 .divider {
   border-top: 1px solid #333;
+}
+
+#topScroll {
+  scrollbar-color: dark;
 }
 </style>
