@@ -3,6 +3,10 @@
     <v-card>
       <v-card-title class="text-h5 grey lighten-2">
         {{ code }}
+        <v-spacer></v-spacer>
+        <v-btn color="primary" text @click="dialog = false"
+          >CLOSE<v-icon right>close</v-icon></v-btn
+        >
       </v-card-title>
 
       <v-card-text class="mt-5 pb-12 pt-2" style="color: #111">
@@ -11,10 +15,10 @@
 
       <v-divider></v-divider>
 
-      <v-card-actions>
+      <!-- <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="primary" text @click="dialog = false"> Close </v-btn>
-      </v-card-actions>
+      </v-card-actions> -->
     </v-card>
   </v-dialog>
 </template>
@@ -37,7 +41,11 @@ export default {
       this.response = payload.response[0].values[0][0]
         .replace(/@0@/gi, "\n\n")
         .replace(/@1@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;")
-        .replace(/@2@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        .replace(/@2@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+        .replace(
+          /@3@/gi,
+          "\n\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        );
     });
   },
   methods: {},

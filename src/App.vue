@@ -21,7 +21,7 @@
         ><span
           style="font-weight: 900 !important; color: #333; font-size: 24px"
           class="agency ml-3"
-          >ILLINOIS STATUTE EXPLORER TEST</span
+          >ILLINOIS STATUTE EXPLORER PLAYGROUND</span
         ></v-toolbar-title
       >
       <v-spacer></v-spacer>

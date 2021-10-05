@@ -922,9 +922,9 @@ FROM  (((((((((tbl_Statutes as S`;
 
               if (typeof text !== "string") console.log("not string");
               let formattedText = `<a class="cell-code" onclick="window.$vue.displayStatute('${cell}')">${text}</a>`;
-              result = `<td class="px-4 py-2" ><pre>${formattedText}</pre></td>`;
+              result = `<td class="px-4 py-2 text-center" ><pre style="width: 110px !important;">${formattedText}</pre><div class="text-center mt-1" style="font-size: 10px; font-weight: bold; color: #777">Click for full  statute</div></td>`;
             } else {
-              result = `<td class="px-4 py-6"><strong>${cell}</strong></td>`;
+              result = `<td class="px-2 py-6" style="width: 130px !important;"><strong>${cell}</strong></td>`;
             }
             return result;
           })
@@ -953,7 +953,8 @@ FROM  (((((((((tbl_Statutes as S`;
       let myTable = window.$("#myTable").DataTable({
         responsive: false,
         dom: "<'toolbar'>iBfrtlp",
-        autoWidth: false,
+        autoWidth: true,
+        columnDefs: [{ width: "20%", targets: 0 }],
         pageLength: 10,
         aLengthMenu: [
           [5, 10, 25, 50, 250, -1],
@@ -1025,11 +1026,11 @@ FROM  (((((((((tbl_Statutes as S`;
       this.loading = false;
       window.$("#results").show();
       doubleScroll(document.getElementById("doublescroll"));
-      window
-        .$("div.toolbar")
-        .html(
-          "<div class='mb-2' style='color: #1b3c60'><b>Click 'Code' to display full statute</b></div>"
-        );
+      // window
+      //   .$("div.toolbar")
+      //   .html(
+      //     "<div class='mb-2' style='color: #1b3c60'><b>Click 'Code' to display full statute</b></div>"
+      //   );
       window.NProgress.done();
     },
     async displayStatute(code) {
