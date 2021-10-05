@@ -6,7 +6,7 @@
       </v-card-title>
 
       <v-card-text class="mt-5 pb-12 pt-2" style="color: #111">
-        <pre>{{ response }}</pre>
+        <pre v-html="response"></pre>
       </v-card-text>
 
       <v-divider></v-divider>
