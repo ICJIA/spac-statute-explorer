@@ -2,7 +2,7 @@
 
 > Proof of concept client-side integration of Vue 2.x and https://sql.js.org.
 
-> Loads the Web Assembly (WASM) sqlite3 module, loads a sqlite3 database of (very out of date) Illinois criminal statutes into client memory, and then provides a simple REPL and keyword search.
+> Loads the Web Assembly (WASM) sqlite3 module, loads a sqlite3 database of (very out of date) Illinois criminal statutes into client memory, and then provides a simple REPL, keyword search, and query builder.
 
 > Test for the [Illinois Sentencing Policy and Advisory Council](https://spac.illinois.gov/).
 
