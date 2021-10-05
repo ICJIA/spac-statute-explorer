@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" width="90%" eager>
     <v-card>
-      <v-card-title class="text-h5 grey lighten-2 mb-3 px-4">
+      <v-card-title class="text-h5 grey lighten-2 px-4">
         <v-spacer></v-spacer>
         <v-btn
           color="primary"
@@ -11,7 +11,7 @@
           >CLOSE<v-icon right>close</v-icon></v-btn
         >
       </v-card-title>
-      <div id="modalResults" class="mb-8 px-4 py-1 pb-10"></div>
+      <div id="modalResults" class="my-3 px-4 pb-10"></div>
     </v-card>
   </v-dialog>
 </template>
@@ -46,9 +46,9 @@ export default {
         <tr><th >${this.code}</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td style="background: #fff">
-              <pre>${this.response}</pre>
+          <tr >
+            <td style="background: #fff" >
+              <pre class="pb-8 pt-2">${this.response}</pre>
             </td>
           </tr>
         </tbody>

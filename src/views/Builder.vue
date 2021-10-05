@@ -920,6 +920,7 @@ FROM  (((((((((tbl_Statutes as S`;
           .map((cell, idx) => {
             let col = columnNames[idx].replace(new RegExp("<[^>]*>", "g"), "");
             let result;
+
             if (col === "Code") {
               let text;
               if (typeof cell !== "string") {
