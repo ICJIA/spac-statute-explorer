@@ -1,23 +1,17 @@
 <template>
   <v-dialog v-model="dialog" width="90%" eager>
     <v-card>
-      <v-card-title class="text-h5 grey lighten-2">
-        {{ code }}
+      <v-card-title class="text-h5 grey lighten-2 mb-3 px-4">
         <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="dialog = false"
+        <v-btn
+          color="primary"
+          text
+          @click="dialog = false"
+          style="font-weight: 900"
           >CLOSE<v-icon right>close</v-icon></v-btn
         >
       </v-card-title>
-      <table id="modal" class="markdown-body" style="width: 100%">
-        <thead></thead>
-        <tbody>
-          <tr>
-            <td style="background: #fff">
-              <pre>{{ response }}</pre>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="modalResults" class="mb-8 px-4 py-1 pb-10"></div>
     </v-card>
   </v-dialog>
 </template>
@@ -33,8 +27,9 @@ export default {
       response: null,
     };
   },
-  created() {
+  mounted() {
     EventBus.$on("show-statute", (payload) => {
+      const el = document.getElementById("modalResults");
       this.dialog = true;
       this.code = payload.code;
       this.response = payload.response[0].values[0][0]
@@ -45,9 +40,28 @@ export default {
           /@3@/gi,
           "\n\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         );
+
+      let modalTable = `<table id="modalTable" style="width: 100%">
+        <thead style="background: #333; color: #fff">
+        <tr><th >${this.code}</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="background: #fff">
+              <pre>${this.response}</pre>
+            </td>
+          </tr>
+        </tbody>
+      </table>`;
+      el.innerHTML = modalTable;
+      this.$nextTick(() => {
+        window.$("#modalTable").DataTable({
+          dom: "<'toolbar'>Brt",
+        });
+      });
     });
   },
-  mounted() {},
+
   methods: {},
 };
 </script>
