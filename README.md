@@ -42,11 +42,21 @@ npm run lint
 
 ### SQL query
 
+> Optimizations needed.
+
 - https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Home.vue
 
 ### Keyword query
 
+> Optimizations needed.
+
 - https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Keyword.vue
+
+### Query builder
+
+> Circa 2010. First created in VBA, ported to CFML, now in Vue.js. Optimizations needed.
+
+- https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Builder.vue
 
 ## References
 
