@@ -872,6 +872,13 @@ FROM  (((((((((tbl_Statutes as S`;
       const before = Date.now();
 
       try {
+        if (this.strSQL.match(/insert|delete|drop|update|replace|create/i)) {
+          console.log("SQL not permitted");
+          this.err = "SQL not permitted";
+          window.NProgress.done();
+          el.innerHTML = ``;
+          return;
+        }
         let db = this.$store.state.db;
         const res = await db.exec(this.strSQL);
         console.log("db queried");

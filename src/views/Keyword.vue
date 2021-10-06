@@ -355,12 +355,22 @@ export default {
       window.NProgress.done();
     },
     async fetchData() {
+      const el = document.getElementById("results");
+      if (
+        this.sqlStatement.match(/insert|delete|drop|update|replace|create/i)
+      ) {
+        console.log("SQL not permitted");
+        this.err = "SQL not permitted";
+        window.NProgress.done();
+        el.innerHTML = ``;
+        return null;
+      }
       this.$gtag.event("keywordSearch", {
         event_category: "sqlStatement",
         event_label: this.keyword,
       });
       this.err = null;
-      const el = document.getElementById("results");
+
       el.innerHTML = `Building results table ...`;
       window.NProgress.start();
       const before = Date.now();
