@@ -12,17 +12,23 @@ const routes = [
   },
 
   {
+    path: "/builder",
+    name: "builder",
+    redirect: "/",
+  },
+  {
+    path: "/keyword",
+    name: "keyword",
+
+    component: () =>
+      import(/* webpackChunkName: "builder" */ "../views/Keyword.vue"),
+  },
+  {
     path: "/sql",
     name: "sql",
 
-    component: () => import(/* webpackChunkName: "sql" */ "../views/Sql.vue"),
-  },
-  {
-    path: "/builder",
-    name: "builder",
-
     component: () =>
-      import(/* webpackChunkName: "builder" */ "../views/Builder.vue"),
+      import(/* webpackChunkName: "builder" */ "../views/Sql.vue"),
   },
   // {
   //   path: "/sandbox",

@@ -44,7 +44,7 @@ npm run lint
 
 > Many optimizations needed.
 
-- https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Home.vue
+- https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Sql.vue
 
 ### Keyword query
 
@@ -58,7 +58,7 @@ npm run lint
 
 > Many optimizations needed.
 
-- https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Builder.vue
+- https://github.com/ICJIA/spac-statute-explorer/blob/master/src/views/Home.vue
 
 ## References
 

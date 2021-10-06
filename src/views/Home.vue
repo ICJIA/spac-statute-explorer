@@ -1,156 +1,439 @@
 <template>
-  <v-container class="markdown-body">
-    <v-row>
-      <v-col>
-        <div v-if="$store.state.isDbReady">
-          <v-text-field
-            v-model="keyword"
-            filled
-            label="Keyword search"
-            v-on:keyup="buildSqlStatement(keyword)"
-            style="font-weight: bold !important"
-          ></v-text-field>
-          <v-container fluid style="padding: 0; margin: 0; margin-top: 0px"
-            ><v-row>
-              <v-col cols="12" md="8">
-                <v-text-field
-                  v-model="metadata.message"
-                  hint="Must (re)execute query in order to apply updated header"
-                  label="Header message for exports"
-                  style="font-size: 12px; font-weight: bold"
-                ></v-text-field> </v-col
-              ><v-col cols="12" md="4">
-                <v-text-field
-                  v-model="metadata.timestamp"
-                  disabled
-                  label="Query timestamp"
-                  style="font-size: 12px; font-weight: bold"
-                ></v-text-field> </v-col></v-row
-          ></v-container>
+  <div>
+    <v-container
+      ><v-row
+        ><v-col>
+          <v-form ref="form">
+            <v-container class="flush">
+              <v-row>
+                <v-col>
+                  <div class="builder-header mb-4">Statute Keyword Search:</div>
+                  <v-text-field
+                    v-model="keyword"
+                    filled
+                    label="Enter keyword"
+                    style="font-weight: bold !important"
+                    hint="Keyword is optional"
+                    @keyup="submit()"
+                  ></v-text-field
+                ></v-col>
+                <v-col>
+                  <div class="builder-header mb-4">
+                    Select Truth in Sentencing:
+                  </div>
+                  <v-select
+                    filled
+                    v-model="cboTIS"
+                    :items="cboTISItems"
+                    label="Select"
+                    persistent-hint
+                    single-line
+                    @change="submit()"
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </v-container>
 
+            <v-container fluid class="flush spacer">
+              <v-row>
+                <v-col
+                  ><div class="builder-header">
+                    Select by Mandatory Setence:
+                  </div>
+                  <v-checkbox
+                    v-model="ckSentenceCS"
+                    label="Community Service"
+                    color="grey darken-4"
+                    hide-details
+                    @click="submit()"
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="ckSentenceFine"
+                    label="Fine"
+                    color="grey darken-4"
+                    hide-details
+                    @click="submit()"
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="ckSentence1Year"
+                    label="Imprisonment less than 1 year"
+                    color="grey darken-4"
+                    hide-details
+                    @click="submit()"
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="ckMandIDOC"
+                    label="Imprisonment 1 year or more/non-probationable offenses"
+                    color="grey darken-4"
+                    hide-details
+                    @click="submit()"
+                  ></v-checkbox>
+                </v-col>
+                <v-col
+                  ><div class="builder-header">Select Other Requirements:</div>
+                  <v-checkbox
+                    v-model="ckRegSexOffender"
+                    label="Sex offender registration required"
+                    color="grey darken-4"
+                    hide-details
+                    @click="submit()"
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="ckRegArson"
+                    label="Arson registration required"
+                    color="grey darken-4"
+                    hide-details
+                    @click="submit()"
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="ckRegViolentVsChildren"
+                    label="Violent offender against youth registration required"
+                    color="grey darken-4"
+                    hide-details
+                    @click="submit()"
+                  ></v-checkbox>
+                  <v-checkbox
+                    v-model="ckRegMeth"
+                    label="Methamphetamine registration required"
+                    color="grey darken-4"
+                    hide-details
+                    @click="submit()"
+                  ></v-checkbox
+                ></v-col>
+              </v-row>
+            </v-container>
+
+            <v-container fluid class="flush spacer">
+              <v-row
+                ><v-col
+                  ><div class="builder-header">
+                    Select Offense Classes:
+                  </div></v-col
+                ></v-row
+              >
+              <v-row>
+                <v-col
+                  style="
+                    background: #fcfcfc;
+                    border: 1px solid #ddd;
+                    padding: 0;
+                    margin: 0;
+                  "
+                  class="mr-2"
+                >
+                  <div
+                    class="d-flex px-2 py-0 pt-3"
+                    style="background: #666; color: #fff"
+                  >
+                    <strong>Felonies</strong>
+                    <v-spacer></v-spacer>
+
+                    <!-- <v-checkbox
+                      v-model="ckFeloniesCheckAll"
+                      dark
+                      label="Check All"
+                      color="grey darken-4"
+                      hide-details
+                      style="margin-top: -5px"
+                      @click="submit()"
+                    ></v-checkbox> -->
+                  </div>
+                  <div class="px-4 py-2 pb-4">
+                    <v-checkbox
+                      v-model="felonies.ckMurder"
+                      label="Murder"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClassX"
+                      label="Class X"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClass1"
+                      label="Class 1"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClass2"
+                      label="Class 2"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClass3"
+                      label="Class 3"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="felonies.ckClass4"
+                      label="Class 4"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox></div></v-col
+                ><v-col
+                  style="
+                    background: #fcfcfc;
+                    border: 1px solid #ddd;
+                    padding: 0;
+                    margin: 0;
+                  "
+                  class="mr-2"
+                >
+                  <div
+                    class="d-flex px-2 py-0 pt-3"
+                    style="background: #666; color: #fff"
+                  >
+                    <strong>Misdemeanors</strong>
+                    <v-spacer></v-spacer>
+
+                    <!-- <v-checkbox
+                      v-model="ckMisdemeanorsCheckAll"
+                      label="Check All"
+                      dark
+                      color="grey darken-3"
+                      hide-details
+                      style="margin-top: -5px"
+                      @click="submit()"
+                    ></v-checkbox> -->
+                  </div>
+                  <div class="px-4 py-2">
+                    <v-checkbox
+                      v-model="misdemeanors.ckClassA"
+                      label="Class A"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="misdemeanors.ckClassB"
+                      label="Class B"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="misdemeanors.ckClassC"
+                      label="Class C"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox></div></v-col
+                ><v-col
+                  style="
+                    background: #fcfcfc;
+                    border: 1px solid #ddd;
+                    padding: 0;
+                    margin: 0;
+                  "
+                  class="mr-2"
+                >
+                  <div
+                    class="d-flex px-2 py-0 pt-3"
+                    style="background: #666; color: #fff"
+                  >
+                    <strong>Miscellaneous</strong>
+                    <v-spacer></v-spacer>
+
+                    <!-- <v-checkbox
+                      v-model="ckMiscellaneousCheckAll"
+                      label="Check All"
+                      dark
+                      color="grey darken-4"
+                      hide-details
+                      style="margin-top: -5px"
+                      @click="submit()"
+                    ></v-checkbox> -->
+                  </div>
+                  <div class="px-4 py-2">
+                    <v-checkbox
+                      v-model="miscellaneous.ckPetty"
+                      label="Petty Offenses"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox>
+                    <v-checkbox
+                      v-model="miscellaneous.ckBusiness"
+                      label="Business Expenses"
+                      color="grey darken-4"
+                      hide-details
+                      @click="submit()"
+                    ></v-checkbox></div></v-col></v-row
+            ></v-container> </v-form></v-col></v-row
+    ></v-container>
+    <v-container class="" style="margin-top: -20px">
+      <v-row class="mb-8">
+        <v-col>
           <v-textarea
-            v-model="sqlStatement"
-            name="input"
+            v-model="strSQL"
+            name="sql"
             class="mt-10"
             ref="sql"
-            label="Enter SQL here"
+            label="SQL"
             outlined
-            hint="Press 'Enter' to execute SQL"
-            style="font-weight: bold"
+            style="font-size: 14px"
           ></v-textarea>
-        </div>
-
-        <div
-          v-if="!$store.state.isDbReady"
-          style="height: 200px"
-          class="text-center"
-        >
-          <div>
-            <img
-              :src="require('../assets/spac-purple-default-min.png')"
-              alt="SPAC logo"
-              width="200"
-            />
-          </div>
-          <div style="margin-top: -20px">
-            <img
-              :src="require('../assets/spac-loader.gif')"
-              alt="Loading indicator"
-            />
-          </div>
-
-          <div class="mt-4" style="font-size: 12px; font-weight: bold">
-            Initializing. Please wait...
-          </div>
-        </div>
-        <div class="d-flex mt-4" v-if="$store.state.isDbReady">
-          <v-btn small class="mr-2" @click="listTables()"
-            >Show all tables</v-btn
-          >
-          <v-spacer></v-spacer>
-          <v-btn small outlined class="mr-2" @click="clear()">Clear</v-btn>
-          <v-btn small class="mr-2" @click="reset()">Reset</v-btn>
-          <v-btn small @click="execute()" dark color="purple darken-4"
-            >Execute SQL<v-icon right large>arrow_right</v-icon></v-btn
-          >
-        </div>
-
-        <pre
-          class="error mt-5"
-          v-if="err && $store.state.isDbReady"
-          style="width: 100%"
-          >{{ err.toString() }}</pre
-        >
-        <pre
-          class="error mt-5"
-          v-if="status && $store.state.isDbReady"
-          style="width: 100%"
-        >
-No results</pre
-        >
-
-        <pre class="error mt-5" v-if="$store.state.error" style="width: 100%">{{
-          $store.state.error.toString()
-        }}</pre>
-
-        <div>
-          <div
-            v-if="queryTime && res && !err"
-            style="font-size: 12px"
-            class="mr-2 mt-12 d-flex"
-          >
-            <span v-if="keyword.length">
-              Keyword
-              <strong
-                ><span style="color: purple">&nbsp;{{ keyword }}</span></strong
-              ></span
-            >
+          <div class="d-flex mt-0" style="">
             <v-spacer></v-spacer>
-            Database
-            <strong>&nbsp;{{ database }}</strong
-            >&nbsp;/&nbsp;Query
-            <strong>&nbsp;{{ queryTime }}ms</strong>&nbsp;/&nbsp;Rows returned
-            <strong>&nbsp;{{ queryLength }}</strong>
-          </div>
-
-          <div
-            id="results"
-            class="mt-6 pt-6"
-            :class="{ divider: $store.state.isDbReady && res }"
-          ></div>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+            <v-btn small outlined class="mr-4" @click="reset()"> reset </v-btn>
+            <v-btn small @click="execute()" dark color="grey darken-2"
+              >Execute SQL<v-icon right>arrow_right</v-icon></v-btn
+            >
+          </div></v-col
+        ></v-row
+      >
+    </v-container>
+    <v-container style="margin-top: -50px !important"
+      ><v-row>
+        <v-col>
+          <pre
+            class="error mt-0 py-3 px-3"
+            v-if="err && $store.state.isDbReady"
+            style="width: 100%"
+            >{{ err.toString() }}</pre
+          >
+          <pre
+            class="error mt-0 py-3 px-3"
+            v-if="status && $store.state.isDbReady"
+            style="width: 100%"
+          >
+No results</pre
+          >
+        </v-col></v-row
+      ></v-container
+    >
+    <v-container
+      ><v-row
+        ><v-col>
+          <div>
+            <div
+              v-if="queryTime && res && !err"
+              style="font-size: 12px"
+              class="mr-2 mt-12 d-flex"
+            >
+              <v-spacer></v-spacer>
+              Database
+              <strong>&nbsp;{{ database }}</strong
+              >&nbsp;/&nbsp;Query
+              <strong>&nbsp;{{ queryTime }}ms</strong>&nbsp;/&nbsp;Rows returned
+              <strong>&nbsp;{{ queryLength }}</strong>
+            </div>
+            <div
+              id="results"
+              class="mt-0 pt-0"
+              :class="{ divider: $store.state.isDbReady && res }"
+            ></div></div></v-col></v-row
+    ></v-container>
+  </div>
 </template>
 
 <script>
-// import initSqlJs from "sql.js";
-// import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
-const FileSaver = require("file-saver");
-// import { saveAs } from "file-saver";
+/* eslint-disable no-unused-vars */
+import { EventBus } from "@/event-bus";
+let FileSaver = require("file-saver");
+function doubleScroll(element) {
+  var scrollbar = document.createElement("div");
+  scrollbar.appendChild(document.createElement("div"));
+  scrollbar.style.overflow = "auto";
+  scrollbar.style.overflowY = "hidden";
+  scrollbar.style.marginBottom = "15px";
+  scrollbar.firstChild.style.width = element.scrollWidth + "px";
+  scrollbar.firstChild.style.paddingTop = "1px";
+
+  scrollbar.firstChild.appendChild(document.createTextNode("\xA0"));
+  var running = false;
+  scrollbar.onscroll = function () {
+    if (running) {
+      running = false;
+      return;
+    }
+    running = true;
+    element.scrollLeft = scrollbar.scrollLeft;
+  };
+  element.onscroll = function () {
+    if (running) {
+      running = false;
+      return;
+    }
+    running = true;
+    scrollbar.scrollLeft = element.scrollLeft;
+  };
+  element.parentNode.insertBefore(scrollbar, element);
+}
 export default {
-  name: "Home",
-  watch: {},
+  name: "builder",
+  mounted() {
+    window.$vue = this;
+    this.submit();
+  },
   data() {
     return {
-      databases: ["statutes.db"],
+      strSQL: "",
+      builderObj: () => {},
+      debug: false,
+      keyword: "",
+      cboTIS: 0,
+      cboTISItems: [
+        { text: "No selection", value: 0 },
+        { text: "100% Sentence", value: 1 },
+        { text: "85% Sentence", value: 2 },
+        { text: "75% Sentence", value: 3 },
+      ],
+      ckSentenceCS: false,
+      ckSentenceFine: false,
+      ckSentence1Year: false,
+      ckMandIDOC: false,
+      ckRegSexOffender: false,
+      ckRegArson: false,
+      ckRegViolentVsChildren: false,
+      ckRegMeth: false,
+      ckMurder: false,
+      ckClassX: false,
+      ckClass1: false,
+      ckClass2: false,
+      ckClass3: false,
+      ckClass4: false,
+      ckFeloniesCheckAll: false,
+      ckMisdemeanorsCheckAll: false,
+      ckMiscellaneousCheckAll: false,
+      felonies: {
+        ckMurder: false,
+        ckClassX: false,
+        ckClass1: false,
+        ckClass2: false,
+        ckClass3: false,
+        ckClass4: false,
+      },
+      misdemeanors: {
+        ckClassA: false,
+        ckClassB: false,
+        ckClassC: false,
+      },
+      miscellaneous: {
+        ckPetty: false,
+        ckBusiness: false,
+      },
       res: null,
       err: null,
-      sqlStatement: null,
-      db: null,
-      columns: null,
-      values: null,
+      status: null,
       queryTime: null,
+
       queryLength: null,
       loading: null,
       ready: false,
-      status: null,
-      defaultKeyword: "cannabis",
-      keyword: "cannabis",
-      database: "statutes.db",
-      defaultSelect: ` `,
 
+      database: "statutes.db",
       metadata: {
         message:
           "This is a custom header message and will appear on exported files",
@@ -159,82 +442,498 @@ export default {
       messageTop: null,
     };
   },
-
+  watch: {
+    ckFeloniesCheckAll(newValue) {
+      for (const [key] of Object.entries(this.felonies)) {
+        this.felonies[key] = newValue;
+      }
+    },
+    ckMisdemeanorsCheckAll(newValue) {
+      for (const [key] of Object.entries(this.misdemeanors)) {
+        this.misdemeanors[key] = newValue;
+      }
+    },
+    ckMiscellaneousCheckAll(newValue) {
+      for (const [key] of Object.entries(this.miscellaneous)) {
+        this.miscellaneous[key] = newValue;
+      }
+    },
+  },
   methods: {
+    submit() {
+      this.res = null;
+      this.err = null;
+      const el = document.getElementById("results");
+      el.innerHTML = "";
+      this.metadata.message =
+        "This is a custom header message and will appear on exported files";
+
+      this.$store.commit("setClearError");
+      this.builderObj = {
+        keyword: this.keyword,
+        cboTIS: this.cboTIS,
+        ckSentenceCS: this.ckSentenceCS,
+        ckSentenceFine: this.ckSentenceFine,
+        ckSentence1Year: this.ckSentence1Year,
+        ckMandIDOC: this.ckMandIDOC,
+        ckRegSexOffender: this.ckRegSexOffender,
+        ckRegArson: this.ckRegArson,
+        ckRegViolentVsChildren: this.ckRegViolentVsChildren,
+        ckRegMeth: this.ckRegMeth,
+        ckMurder: this.felonies.ckMurder,
+        ckClassX: this.felonies.ckClassX,
+        ckClass1: this.felonies.ckClass1,
+        ckClass2: this.felonies.ckClass2,
+        ckClass3: this.felonies.ckClass3,
+        ckClass4: this.felonies.ckClass4,
+        ckClassA: this.misdemeanors.ckClassA,
+        ckClassB: this.misdemeanors.ckClassB,
+        ckClassC: this.misdemeanors.ckClassC,
+        ckPetty: this.miscellaneous.ckPetty,
+        ckBusiness: this.miscellaneous.ckBusiness,
+      };
+      this.buildSql(this.builderObj);
+    },
+    buildSql({
+      keyword,
+      cboTIS,
+      ckSentenceCS,
+      ckSentenceFine,
+      ckSentence1Year,
+      ckMandIDOC,
+      ckRegSexOffender,
+      ckRegArson,
+      ckRegViolentVsChildren,
+      ckRegMeth,
+      ckMurder,
+      ckClassX,
+      ckClass1,
+      ckClass2,
+      ckClass3,
+      ckClass4,
+      ckClassA,
+      ckClassB,
+      ckClassC,
+      ckPetty,
+      ckBusiness,
+    }) {
+      console.log("buildSQL started");
+      if (this.keyword && this.keyword.length) {
+        this.keyword = this.keyword.replace(/'/g, "''");
+        this.keyword = this.keyword.replace(/%/g, "\\%");
+        this.keyword = this.keyword.replace(/_/g, "\\_");
+      }
+
+      let txtSearchTerm_adv = this.keyword;
+      let ckUseOffenseClass;
+      let iOffenseClassesChecked;
+      let strSQL = `SELECT s.ID, s.Code, s.statute, s.section, s.Offensetitle, s.SentenceDeterminant, s.FullStatuteFK, s.PenaltySubsection, s.OfnsClass, s.SentenceRangeText, s.MandatoryMinimums, s.MandatoryIncarceration, s.SubsequentOffns, s.Notes, s.DisplayMe, s.TruthinSentencingText
+FROM  (((((((((tbl_Statutes as S`;
+      let iAndStarted = 0;
+      let iSubAndStarted = 0;
+      let iOrStarted = 0;
+      let iCommaStarted = 0;
+      let iParenCount = 9;
+
+      if (
+        ckMurder ||
+        ckClassA ||
+        ckPetty ||
+        ckClassX ||
+        ckClassB ||
+        ckBusiness ||
+        ckClass1 ||
+        ckClassC ||
+        ckClass2 ||
+        ckClass3 ||
+        ckClass4
+      ) {
+        ckUseOffenseClass = true;
+        iOffenseClassesChecked = 1;
+      } else {
+        ckUseOffenseClass = false;
+        iOffenseClassesChecked = 0;
+      }
+
+      if (ckSentenceCS || ckSentenceFine || ckSentence1Year) {
+        strSQL += ` INNER JOIN tlu_MandatoryMinimum as MM ON `;
+        strSQL += ` MM.MandatoryMinimums = s.MandatoryMinimums) `;
+        iParenCount = iParenCount - 1;
+      }
+
+      if (iOffenseClassesChecked === 1) {
+        strSQL += ` INNER JOIN tlu_OffenseClasses as oc on s.OfnsClass = oc.OfnsClass) `;
+        strSQL += ` INNER JOIN tlu_OffClassChoices As ocChoices ON oc.OffChoiceCode = ocChoices.OffclassKey) `;
+        iParenCount = iParenCount - 2;
+      }
+
+      if (cboTIS > 0) {
+        strSQL += ` INNER JOIN tlu_TIS as tis on s.TruthInSentencingText = tis.TruthInSentencing) `;
+        iParenCount = iParenCount - 1;
+      }
+
+      let loop_ct = 0;
+      do {
+        strSQL += `)`;
+        iParenCount = iParenCount - 1;
+      } while (loop_ct < iParenCount);
+
+      if (ckSentenceCS || ckSentenceFine || ckSentence1Year) {
+        iOrStarted = 0;
+
+        if (ckSentence1Year) {
+          strSQL += `  WHERE (mm.sentencelt1yr = TRUE `;
+          iOrStarted = 1;
+          iAndStarted = 1;
+        }
+
+        if (ckSentenceCS) {
+          if (iAndStarted === 1) {
+            strSQL += ` and `;
+          } else {
+            strSQL += ` WHERE (`;
+            iAndStarted = 1;
+          }
+
+          strSQL += ` mm.CommunityService = TRUE `;
+          iAndStarted = 1;
+        }
+
+        if (ckSentenceFine) {
+          if (iAndStarted === 1) {
+            strSQL += ` and `;
+          } else {
+            strSQL += ` WHERE(`;
+            iAndStarted = 1;
+          }
+
+          strSQL += ` mm.SentenceFine = TRUE `;
+          iAndStarted = 1;
+        }
+
+        if (iAndStarted === 1) {
+          strSQL += `)`;
+        }
+      }
+
+      if (txtSearchTerm_adv && txtSearchTerm_adv.length > 2) {
+        if (iAndStarted === 1) {
+          strSQL += ` AND `;
+        } else {
+          strSQL += ` WHERE `;
+          iAndStarted = 1;
+        }
+
+        strSQL += ` ( s.Offensetitle LIKE '%${txtSearchTerm_adv}%' `;
+        strSQL += `  OR s.SentenceDeterminant LIKE '%${txtSearchTerm_adv}%' )`;
+      }
+
+      // if (cboTIS === 0) {
+      //   if (iAndStarted === 1) {
+      //     strSQL += ` AND `;
+      //   } else {
+      //     strSQL += ` WHERE `;
+      //     iAndStarted = 1;
+      //   }
+      //   strSQL += ` tis.truthID = ${cboTIS}`;
+      // }
+
+      if (ckRegArson) {
+        if (iAndStarted === 1) {
+          strSQL += ` AND `;
+        } else {
+          strSQL += ` WHERE `;
+          iAndStarted = 1;
+        }
+        strSQL += ` s.ArsonRegRequired = TRUE `;
+      }
+
+      if (ckRegMeth) {
+        if (iAndStarted === 1) {
+          strSQL += ` AND `;
+        } else {
+          strSQL += ` WHERE `;
+          iAndStarted = 1;
+        }
+        strSQL += ` s.MethRegRequired = TRUE `;
+      }
+
+      if (ckRegSexOffender) {
+        if (iAndStarted === 1) {
+          strSQL += ` AND `;
+        } else {
+          strSQL += ` WHERE `;
+          iAndStarted = 1;
+        }
+        strSQL += ` s.SexOffenderRegRequired = TRUE `;
+      }
+
+      if (ckRegViolentVsChildren) {
+        if (iAndStarted === 1) {
+          strSQL += ` AND `;
+        } else {
+          strSQL += ` WHERE `;
+          iAndStarted = 1;
+        }
+        strSQL += ` s.ViolentOffenderYouthRegRequired = TRUE `;
+      }
+
+      if (ckMandIDOC) {
+        if (iAndStarted === 1) {
+          strSQL += ` AND `;
+        } else {
+          strSQL += ` WHERE `;
+          iAndStarted = 1;
+        }
+        strSQL += ` s.MandatoryIDOC = TRUE `;
+      }
+
+      let sOffenseList = "";
+
+      if (ckUseOffenseClass) {
+        iCommaStarted = 0;
+        sOffenseList = "(";
+
+        if (ckMurder) {
+          sOffenseList += "1";
+          iCommaStarted = 1;
+        }
+
+        if (ckClassX) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "2";
+        }
+
+        if (ckClass1) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "3";
+        }
+
+        if (ckClass2) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "4";
+        }
+
+        if (ckClass3) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "5";
+        }
+
+        if (ckClass4) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "6";
+        }
+
+        if (ckClassA) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "10";
+        }
+
+        if (ckClassB) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "11";
+        }
+
+        if (ckClassC) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "12";
+        }
+
+        if (ckPetty) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "15";
+        }
+
+        if (ckBusiness) {
+          if (iCommaStarted === 1) {
+            sOffenseList += ",";
+          } else {
+            iCommaStarted = 1;
+          }
+
+          sOffenseList += "16";
+        }
+
+        // if (ckEquipment) {
+        //   if (iCommaStarted === 1) {
+        //     sOffenseList += ",";
+        //   } else {
+        //     iCommaStarted = 1;
+        //   }
+
+        //   sOffenseList += "17";
+        // }
+
+        // if (ckTraffic) {
+        //   if (iCommaStarted === 1) {
+        //     sOffenseList += ",";
+        //   } else {
+        //     iCommaStarted = 1;
+        //   }
+
+        //   sOffenseList += "18";
+        // }
+
+        if (iCommaStarted === 1) {
+          if (iAndStarted === 1) {
+            strSQL += " AND ";
+          } else {
+            strSQL += " WHERE ";
+            iAndStarted = 1;
+          }
+
+          strSQL += ` ocChoices.offclasskey in ${sOffenseList})`;
+        }
+      }
+
+      this.strSQL = strSQL;
+    },
     buildMessageTop() {
-      this.metadata.timestamp = new Date().toLocaleString();
       const messageTop = `${this.metadata.message} | Timestamp: ${this.metadata.timestamp}`;
       return messageTop;
     },
-    listTables() {
-      this.sqlStatement = "select * from sqlite_master where type='table'";
-      this.loading = true;
-      this.fetchData();
-      this.keyword = "";
-    },
-
-    trim(val) {
-      if (!val) return;
-      return val.toString().replace(/^\s+|\s+$/g, "");
-    },
     reset() {
+      this.$refs.form.reset();
+      this.submit();
       this.res = null;
       this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = "";
-      this.keyword = "cannabis";
       this.metadata.message =
         "This is a custom header message and will appear on exported files";
-      this.sqlStatement = this.buildSqlStatement(this.keyword);
+
       this.$store.commit("setClearError");
     },
-    clear() {
-      this.sqlStatement = "";
-      this.res = null;
+    execute() {
+      this.loading = true;
+      this.metadata.timestamp = new Date().toLocaleString();
+      this.fetchData();
+    },
+    async fetchData() {
       this.err = null;
       const el = document.getElementById("results");
-      this.keyword = "";
-      el.innerHTML = "";
+      el.innerHTML = `Building results table ...`;
+      window.NProgress.start();
+
+      const before = Date.now();
+
+      try {
+        let db = this.$store.state.db;
+        const res = await db.exec(this.strSQL);
+        console.log("db queried");
+        if (!res.length) {
+          console.log("no results");
+          this.err = "No results";
+          window.NProgress.done();
+          el.innerHTML = ``;
+          return;
+        }
+        this.res = res[0];
+        this.metadata.timestamp = new Date().toLocaleString();
+        this.res.metadata = this.metadata;
+        this.messageTop = this.buildMessageTop();
+        this.columns = res[0].columns;
+        this.values = res[0].values;
+        this.queryLength = res[0].values.length;
+        this.loading = false;
+        const after = Date.now();
+        this.queryTime = after - before;
+        console.log(this.res);
+        // this.$gtag.event("repl", {
+        //   event_category: "sqlStatement",
+        //   event_label: this.sqlStatement,
+        // });
+        this.buildResultsTable();
+      } catch (err) {
+        console.log(err);
+        this.err = err;
+        window.NProgress.done();
+        el.innerHTML = "";
+        this.loading = false;
+        window.NProgress.done();
+      }
+
+      window.NProgress.done();
     },
     buildResultsTable() {
       window.NProgress.start();
-
+      window.$("#results").hide();
+      this.loading = true;
       const el = document.getElementById("results");
 
       let columnNames = this.columns.map((col) => {
-        return `<th >${col}</th>`;
+        return `<th>${col}</th>`;
       });
+
       // let columnToggles = this.columns.map((col, idx) => {
       //   return `<a class="toggle-vis column" data-column="${idx}">${col}</a>&nbsp;&nbsp;&nbsp;`;
       // });
 
-      //console.log(columnNames);
       let rows = this.values.map((row) => {
         return `<tr style="display: relative !important;">${row
           // eslint-disable-next-line no-unused-vars
           .map((cell, idx) => {
             let col = columnNames[idx].replace(new RegExp("<[^>]*>", "g"), "");
             let result;
-            if (col === "StatuteText") {
+
+            if (col === "Code") {
               let text;
               if (typeof cell !== "string") {
                 text = "";
               } else {
-                text = cell;
+                text = cell.trim();
               }
 
               if (typeof text !== "string") console.log("not string");
-              let formattedText = text
-                .replace(/@0@/gi, "\n\n")
-                .replace(/@1@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;")
-                .replace(
-                  /@2@/gi,
-                  "\n\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                );
-
-              result = `<td class="px-4 py-2"><pre>${formattedText}</pre></td>`;
+              let formattedText = `<a class="cell-code" onclick="window.$vue.displayStatute('${cell}')">${text}</a>`;
+              result = `<td class="px-4 py-2 text-center" ><pre style="width: 110px !important;">${formattedText}</pre><div class="text-center mt-1" style="font-size: 10px; font-weight: bold; color: #777">Click for full  statute</div></td>`;
             } else {
-              result = `<td class="px-4 py-6"><strong>${cell}</strong></td>`;
+              result = `<td class="px-2 py-6" style="width: 130px !important;"><strong>${cell}</strong></td>`;
             }
             return result;
           })
@@ -242,30 +941,35 @@ export default {
       });
 
       const table = `
-      <div style="" >
-        <div style="font-size: 12px; background: #fff; padding: 3px; margin-top: -23px; padding: 5px;" class="mb-12">
-          
-        <table style="font-size: 12px; width: 100% !important;" class="pt-6 px-3; " id="myTable">
+      <div style="overflow-x: auto;" id="doublescroll">
+        <table style="font-size: 12px; width: 100% !important;" border="1" class="pt-6 px-3; " id="myTable">
+      
           <thead>
             <tr>
               ${columnNames.join("")}
             </tr>
           </thead>
           <tbody>
-              ${rows.join("")}
+            
+                ${rows.join("")}
+              
           </tbody>
         </table>
-      </div>`;
+        </div>
+      `;
       el.innerHTML = table;
       console.log("db table built");
-
-      // eslint-disable-next-line no-unused-vars
       let myTable = window.$("#myTable").DataTable({
-        responsive: true,
-        dom: "iBfrtlp",
-        fixedHeader: true,
-        pageLength: 25,
-        lengthMenu: [10, 25, 50, 100, 250],
+        responsive: false,
+        dom: "<'toolbar'>iBfrtlp",
+        autoWidth: true,
+        columnDefs: [{ width: "20%", targets: 0 }],
+        pageLength: 10,
+        aLengthMenu: [
+          [5, 10, 25, 50, 250, -1],
+          [5, 10, 25, 50, 250, "All"],
+        ],
+
         buttons: [
           {
             extend: "copyHtml5",
@@ -303,7 +1007,7 @@ export default {
             autoPrint: false,
             messageTop: window.$vue.messageTop,
             exportOptions: {
-              stripHtml: true,
+              columns: ":visible",
             },
           },
           {
@@ -320,120 +1024,65 @@ export default {
           },
         ],
         language: {
-          search: "Filter: ",
-          info: "Showing _START_ to _END_ of _TOTAL_ results  ",
+          search: "Filter results: ",
+          info: "Showing _START_ to _END_ of _TOTAL_ results",
         },
         oLanguage: {
           sLengthMenu: "Show _MENU_ results per page",
         },
       });
-      window.$("a.toggle-vis").on("click", function (e) {
-        e.preventDefault();
 
-        // Get the column API object
-        var column = myTable.column(window.$(this).attr("data-column"));
-
-        // Toggle the visibility
-        column.visible(!column.visible());
-      });
+      this.loading = false;
+      window.$("#results").show();
+      doubleScroll(document.getElementById("doublescroll"));
+      // window
+      //   .$("div.toolbar")
+      //   .html(
+      //     "<div class='mb-2' style='color: #1b3c60'><b>Click 'Code' to display full statute</b></div>"
+      //   );
       window.NProgress.done();
     },
-    execute() {
-      this.loading = true;
-      this.fetchData();
-    },
-    async selectDatabase() {
-      this.queryTime = null;
-      this.queryLength = null;
-      this.res = null;
-      const el = document.getElementById("results");
-      el.innerHTML = "";
-      window.NProgress.start();
-
-      await this.initialize();
-      // this.fetchData();
-      window.NProgress.done();
-    },
-    async fetchData() {
-      this.$gtag.event("keywordSearch", {
-        event_category: "sqlStatement",
-        event_label: this.keyword,
-      });
-      this.err = null;
-      const el = document.getElementById("results");
-      el.innerHTML = `Building results table ...`;
-      window.NProgress.start();
-      const before = Date.now();
+    async displayStatute(code) {
+      console.log("fire modal for formatted statute here: ", code);
+      let statuteQuery = `select StatuteText from tbl_statutes where code like '%${code}%'`;
       try {
         let db = this.$store.state.db;
-        const res = await db.exec(this.sqlStatement);
-        console.log("db queried");
-        if (!res.length) {
-          console.log("no results");
-          this.err = "No results";
-          el.innerHTML = ``;
-          window.NProgress.done();
-          return;
-        }
-        this.res = res[0];
-        this.metadata.timestamp = new Date().toLocaleString();
-        this.res.metadata = this.metadata;
-        this.messageTop = this.buildMessageTop();
-        this.columns = res[0].columns;
-        this.values = res[0].values;
-        this.queryLength = res[0].values.length;
-        this.loading = false;
-        const after = Date.now();
-        this.queryTime = after - before;
-
-        this.buildResultsTable();
+        const res = await db.exec(statuteQuery);
+        let payload = {
+          code: code,
+          response: res,
+        };
+        EventBus.$emit("show-statute", payload);
       } catch (err) {
         console.log(err);
-        this.err = err;
-        window.NProgress.done();
-        el.innerHTML = "";
-        this.loading = false;
       }
-      window.NProgress.done();
     },
-    async initialize() {
-      this.buildSqlStatement(this.defaultKeyword);
-    },
-    buildSqlStatement(keyword) {
-      // if (keyword.length < 4) return;
-
-      //console.log(keyword);
-      this.$nextTick(() => {
-        let sqlStatement = `select id, statute, StatuteText from tbl_statutes where StatuteText like "%${keyword}%"`;
-        this.sqlStatement = sqlStatement;
-        //console.log(this.sqlStatement);
-        this.res = null;
-        this.err = null;
-        const el = document.getElementById("results");
-        el.innerHTML = "";
-        this.loading = true;
-        //this.fetchData();
-      });
-    },
-  },
-
-  async mounted() {
-    this.selectDatabase();
-    window.$vue = this;
-    document.addEventListener("keyup", (event) => {
-      if (event.key === "Enter") {
-        this.execute();
-      }
-    });
-  },
-  beforeDestroy() {
-    document.removeEventListener("keyup", (event) => {
-      if (event.key === "Enter") {
-        this.execute();
-      }
-    });
   },
 };
 </script>
 
-<style></style>
+<style>
+.builder-header {
+  font-weight: bold;
+  margin-left: -10px;
+}
+.flush {
+  margin: 0;
+  padding: 0;
+}
+
+.spacer {
+  margin-top: 40px;
+}
+
+table {
+  border: 1px solid #ccc !important;
+}
+.cell-code {
+  font-weight: bold;
+}
+
+.cell-code:hover {
+  text-decoration: underline;
+}
+</style>
