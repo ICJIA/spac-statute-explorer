@@ -843,8 +843,9 @@ FROM  (((((((((tbl_Statutes as S`;
       return messageTop;
     },
     reset() {
+      this.$vuetify.goTo(0);
       this.$refs.form.reset();
-      this.submit();
+      //
       this.res = null;
       this.err = null;
       const el = document.getElementById("results");
@@ -853,6 +854,7 @@ FROM  (((((((((tbl_Statutes as S`;
         "This is a custom header message and will appear on exported files";
 
       this.$store.commit("setClearError");
+      this.submit();
     },
     execute() {
       this.loading = true;
