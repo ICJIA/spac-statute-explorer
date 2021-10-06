@@ -843,7 +843,6 @@ FROM  (((((((((tbl_Statutes as S`;
       return messageTop;
     },
     reset() {
-      this.$vuetify.goTo(0);
       this.$refs.form.reset();
       //
       this.res = null;
@@ -855,6 +854,9 @@ FROM  (((((((((tbl_Statutes as S`;
 
       this.$store.commit("setClearError");
       this.submit();
+      this.$nextTick(() => {
+        this.$vuetify.goTo("#pageTop");
+      });
     },
     execute() {
       this.loading = true;

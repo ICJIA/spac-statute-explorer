@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app id="pageTop">
     <v-app-bar app color="grey lighten-4" height="90">
       <div class="d-flex align-center">
         <v-img
