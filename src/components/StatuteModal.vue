@@ -49,12 +49,12 @@ export default {
 
       let modalTable = `<table id="modalTable" style="width: 100%">
         <thead style="background: #333; color: #fff">
-        <tr><th >${this.code}</th></tr>
+        <tr><th style="font-size: 22px !important">${this.code}</th></tr>
         </thead>
         <tbody>
           <tr >
-            <td style="background: #fff" >
-              <pre class="pb-8 pt-2">${this.response}</pre>
+            <td style="background: #fff;" >
+              <pre class="pb-8 pt-2" style="font-size: 16px !important; color: #000 !important">${this.response}</pre>
             </td>
           </tr>
         </tbody>
