@@ -113,13 +113,14 @@
               >
               <v-row>
                 <v-col
+                  cols="12"
+                  md="4"
                   style="
                     background: #fcfcfc;
                     border: 1px solid #ddd;
                     padding: 0;
                     margin: 0;
                   "
-                  class="mr-2"
                 >
                   <div
                     class="d-flex px-2 py-0 pt-3"
@@ -181,13 +182,14 @@
                       @click="submit()"
                     ></v-checkbox></div></v-col
                 ><v-col
+                  cols="12"
+                  md="4"
                   style="
                     background: #fcfcfc;
                     border: 1px solid #ddd;
                     padding: 0;
                     margin: 0;
                   "
-                  class="mr-2"
                 >
                   <div
                     class="d-flex px-2 py-0 pt-3"
@@ -228,13 +230,14 @@
                       @click="submit()"
                     ></v-checkbox></div></v-col
                 ><v-col
+                  cols="12"
+                  md="4"
                   style="
                     background: #fcfcfc;
                     border: 1px solid #ddd;
                     padding: 0;
                     margin: 0;
                   "
-                  class="mr-2"
                 >
                   <div
                     class="d-flex px-2 py-0 pt-3"
@@ -269,7 +272,7 @@
                     ></v-checkbox></div></v-col></v-row
             ></v-container> </v-form></v-col></v-row
     ></v-container>
-    <v-container class="" style="margin-top: -20px">
+    <v-container style="margin-top: -20px">
       <v-row class="mb-8">
         <v-col>
           <v-textarea
