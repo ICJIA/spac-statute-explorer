@@ -280,9 +280,10 @@
             name="sql"
             class="mt-10"
             ref="sql"
+            height="200"
             label="SQL"
             outlined
-            style="font-size: 14px"
+            style="font-size: 14px; font-weight: bold"
           ></v-textarea>
           <div class="d-flex mt-0" style="">
             <v-spacer></v-spacer>
@@ -465,6 +466,7 @@ export default {
       this.err = null;
       const el = document.getElementById("results");
       el.innerHTML = "";
+
       this.metadata.message =
         "This is a custom header message and will appear on exported files";
 
@@ -1041,6 +1043,7 @@ FROM  (((((((((tbl_Statutes as S`;
       //     "<div class='mb-2' style='color: #1b3c60'><b>Click 'Code' to display full statute</b></div>"
       //   );
       window.NProgress.done();
+      this.$vuetify.goTo("#results");
     },
     async displayStatute(code) {
       console.log("fire modal for formatted statute here: ", code);
@@ -1048,10 +1051,17 @@ FROM  (((((((((tbl_Statutes as S`;
       try {
         let db = this.$store.state.db;
         const res = await db.exec(statuteQuery);
+        let response = res[0];
+        this.metadata.timestamp = new Date().toLocaleString();
+        response.metadata = this.metadata;
+
+        this.messageTop = this.buildMessageTop();
         let payload = {
           code: code,
-          response: res,
+          response: response,
+          messageTop: this.messageTop,
         };
+        console.log("payload: ", payload);
         EventBus.$emit("show-statute", payload);
       } catch (err) {
         console.log(err);

@@ -2,6 +2,7 @@
   <v-dialog v-model="dialog" width="90%" eager>
     <v-card>
       <v-card-title class="text-h5 grey lighten-2 px-4">
+        SPAC Statute Explorer
         <v-spacer></v-spacer>
         <v-btn
           color="primary"
@@ -11,6 +12,7 @@
           >CLOSE<v-icon right>close</v-icon></v-btn
         >
       </v-card-title>
+
       <div id="modalResults" class="my-3 px-4 pb-10"></div>
     </v-card>
   </v-dialog>
@@ -18,13 +20,15 @@
 
 <script>
 import { EventBus } from "@/event-bus";
+let FileSaver = require("file-saver");
 export default {
   data() {
     return {
       dialog: false,
       code: null,
-
+      windowTop: null,
       response: null,
+      json: null,
     };
   },
   mounted() {
@@ -32,7 +36,8 @@ export default {
       const el = document.getElementById("modalResults");
       this.dialog = true;
       this.code = payload.code;
-      this.response = payload.response[0].values[0][0]
+      this.messageTop = payload.messageTop;
+      this.response = payload.response.values[0][0]
         .replace(/@0@/gi, "\n\n")
         .replace(/@1@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;")
         .replace(/@2@/gi, "\n\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
@@ -57,6 +62,59 @@ export default {
       this.$nextTick(() => {
         window.$("#modalTable").DataTable({
           dom: "<'toolbar'>Brt",
+          buttons: [
+            {
+              extend: "copyHtml5",
+              text: "Copy",
+              titleAttr: "Copy to clipboard",
+              messageTop: payload.messageTop,
+            },
+            {
+              extend: "excel",
+              text: "Excel",
+              messageTop: payload.messageTop,
+              titleAttr: "Save as Excel",
+            },
+            {
+              extend: "csv",
+              text: "CSV",
+              messageTop: payload.messageTop,
+              titleAttr: "Save as CSV",
+            },
+            {
+              extend: "pdfHtml5",
+              text: "PDF",
+              messageTop: payload.messageTop,
+              titleAttr: "Save as PDF",
+            },
+
+            {
+              extend: "print",
+              text: "Print",
+              titleAttr: "Show Print friendly version",
+              autoPrint: false,
+              messageTop: payload.messageTop,
+              exportOptions: {
+                columns: ":visible",
+              },
+            },
+            {
+              text: "JSON",
+              titleAttr: "Save as JSON",
+              action: function () {
+                console.log(payload);
+                let filename = `statute-explorer-${Date.now()}.json`;
+                let file = new File(
+                  [JSON.stringify(payload.response)],
+                  filename,
+                  {
+                    type: "application/json;charset=utf-8",
+                  }
+                );
+                FileSaver.saveAs(file);
+              },
+            },
+          ],
         });
       });
     });
