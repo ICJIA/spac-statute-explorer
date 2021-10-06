@@ -2,7 +2,8 @@
   <v-dialog v-model="dialog" width="90%" eager>
     <v-card>
       <v-card-title class="text-h5 grey lighten-2 px-4">
-        SPAC Statute Explorer
+        <span class="hidden-sm-and-down"> SPAC Statute Explorer </span>
+
         <v-spacer></v-spacer>
         <v-btn
           color="primary"
