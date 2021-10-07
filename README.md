@@ -63,6 +63,8 @@ npm run lint
 
 - https://reposhub.com/javascript/storage/sql-js-sql-js.html
 
+- https://emscripten.org/docs/porting/files/file_systems_overview.html
+
 - https://github.com/sql-js/react-sqljs-demo
 
 - https://sql.js.org/#/?id=using-fetch
