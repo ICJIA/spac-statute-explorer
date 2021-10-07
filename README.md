@@ -4,9 +4,8 @@
 
 > Loads the Web Assembly (WASM) sqlite3 module, loads a sqlite3 database of (very out of date) Illinois criminal statutes into client memory, and then provides a simple REPL, keyword search, and query builder.
 
-> Test for the [Illinois Sentencing Policy and Advisory Council](https://spac.illinois.gov/).
-
-> Full Illinois criminal statute query site coming soon.
+| :warning: This is a work in progress. The app is still in development. :warning: |
+| -------------------------------------------------------------------------------- |
 
 ## Live Demo
 
