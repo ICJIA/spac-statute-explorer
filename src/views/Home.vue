@@ -6,7 +6,7 @@
           <v-form ref="form">
             <v-container class="flush">
               <v-row>
-                <v-col>
+                <v-col cols="12" md="6">
                   <div class="builder-header mb-4">Statute Keyword Search:</div>
                   <v-text-field
                     v-model="keyword"
@@ -17,7 +17,7 @@
                     @keyup="submit()"
                   ></v-text-field
                 ></v-col>
-                <v-col>
+                <v-col cols="12" md="6">
                   <div class="builder-header mb-4">
                     Select Truth in Sentencing:
                   </div>
@@ -36,7 +36,7 @@
 
             <v-container fluid class="flush spacer">
               <v-row>
-                <v-col
+                <v-col cols="12" md="6"
                   ><div class="builder-header">
                     Select by Mandatory Setence:
                   </div>
@@ -69,7 +69,7 @@
                     @click="submit()"
                   ></v-checkbox>
                 </v-col>
-                <v-col
+                <v-col cols="12" md="6"
                   ><div class="builder-header">Select Other Requirements:</div>
                   <v-checkbox
                     v-model="ckRegSexOffender"
@@ -113,13 +113,14 @@
               >
               <v-row>
                 <v-col
+                  cols="12"
+                  md="4"
                   style="
                     background: #fcfcfc;
                     border: 1px solid #ddd;
                     padding: 0;
                     margin: 0;
                   "
-                  class="mr-2"
                 >
                   <div
                     class="d-flex px-2 py-0 pt-3"
@@ -128,15 +129,14 @@
                     <strong>Felonies</strong>
                     <v-spacer></v-spacer>
 
-                    <!-- <v-checkbox
+                    <v-checkbox
                       v-model="ckFeloniesCheckAll"
                       dark
                       label="Check All"
                       color="grey darken-4"
                       hide-details
                       style="margin-top: -5px"
-                      @click="submit()"
-                    ></v-checkbox> -->
+                    ></v-checkbox>
                   </div>
                   <div class="px-4 py-2 pb-4">
                     <v-checkbox
@@ -182,13 +182,14 @@
                       @click="submit()"
                     ></v-checkbox></div></v-col
                 ><v-col
+                  cols="12"
+                  md="4"
                   style="
                     background: #fcfcfc;
                     border: 1px solid #ddd;
                     padding: 0;
                     margin: 0;
                   "
-                  class="mr-2"
                 >
                   <div
                     class="d-flex px-2 py-0 pt-3"
@@ -197,15 +198,14 @@
                     <strong>Misdemeanors</strong>
                     <v-spacer></v-spacer>
 
-                    <!-- <v-checkbox
+                    <v-checkbox
                       v-model="ckMisdemeanorsCheckAll"
                       label="Check All"
                       dark
                       color="grey darken-3"
                       hide-details
                       style="margin-top: -5px"
-                      @click="submit()"
-                    ></v-checkbox> -->
+                    ></v-checkbox>
                   </div>
                   <div class="px-4 py-2">
                     <v-checkbox
@@ -230,13 +230,14 @@
                       @click="submit()"
                     ></v-checkbox></div></v-col
                 ><v-col
+                  cols="12"
+                  md="4"
                   style="
                     background: #fcfcfc;
                     border: 1px solid #ddd;
                     padding: 0;
                     margin: 0;
                   "
-                  class="mr-2"
                 >
                   <div
                     class="d-flex px-2 py-0 pt-3"
@@ -245,15 +246,14 @@
                     <strong>Miscellaneous</strong>
                     <v-spacer></v-spacer>
 
-                    <!-- <v-checkbox
+                    <v-checkbox
                       v-model="ckMiscellaneousCheckAll"
                       label="Check All"
                       dark
                       color="grey darken-4"
                       hide-details
                       style="margin-top: -5px"
-                      @click="submit()"
-                    ></v-checkbox> -->
+                    ></v-checkbox>
                   </div>
                   <div class="px-4 py-2">
                     <v-checkbox
@@ -272,7 +272,7 @@
                     ></v-checkbox></div></v-col></v-row
             ></v-container> </v-form></v-col></v-row
     ></v-container>
-    <v-container class="" style="margin-top: -20px">
+    <v-container style="margin-top: -20px">
       <v-row class="mb-8">
         <v-col>
           <v-textarea
@@ -448,16 +448,19 @@ export default {
       for (const [key] of Object.entries(this.felonies)) {
         this.felonies[key] = newValue;
       }
+      this.submit();
     },
     ckMisdemeanorsCheckAll(newValue) {
       for (const [key] of Object.entries(this.misdemeanors)) {
         this.misdemeanors[key] = newValue;
       }
+      this.submit();
     },
     ckMiscellaneousCheckAll(newValue) {
       for (const [key] of Object.entries(this.miscellaneous)) {
         this.miscellaneous[key] = newValue;
       }
+      this.submit();
     },
   },
   methods: {
@@ -841,7 +844,7 @@ FROM  (((((((((tbl_Statutes as S`;
     },
     reset() {
       this.$refs.form.reset();
-      this.submit();
+      //
       this.res = null;
       this.err = null;
       const el = document.getElementById("results");
@@ -850,6 +853,10 @@ FROM  (((((((((tbl_Statutes as S`;
         "This is a custom header message and will appear on exported files";
 
       this.$store.commit("setClearError");
+      this.submit();
+      this.$nextTick(() => {
+        this.$vuetify.goTo("#pageTop");
+      });
     },
     execute() {
       this.loading = true;
@@ -865,6 +872,13 @@ FROM  (((((((((tbl_Statutes as S`;
       const before = Date.now();
 
       try {
+        if (this.strSQL.match(/insert|delete|drop|update|replace|create/i)) {
+          console.log("SQL not permitted");
+          this.err = "SQL not permitted";
+          window.NProgress.done();
+          el.innerHTML = ``;
+          return;
+        }
         let db = this.$store.state.db;
         const res = await db.exec(this.strSQL);
         console.log("db queried");
@@ -960,6 +974,7 @@ FROM  (((((((((tbl_Statutes as S`;
         </div>
       `;
       el.innerHTML = table;
+
       console.log("db table built");
       let myTable = window.$("#myTable").DataTable({
         responsive: false,
@@ -1036,6 +1051,7 @@ FROM  (((((((((tbl_Statutes as S`;
 
       this.loading = false;
       window.$("#results").show();
+      this.$vuetify.goTo("#results");
       doubleScroll(document.getElementById("doublescroll"));
       // window
       //   .$("div.toolbar")
@@ -1043,7 +1059,6 @@ FROM  (((((((((tbl_Statutes as S`;
       //     "<div class='mb-2' style='color: #1b3c60'><b>Click 'Code' to display full statute</b></div>"
       //   );
       window.NProgress.done();
-      this.$vuetify.goTo("#results");
     },
     async displayStatute(code) {
       console.log("fire modal for formatted statute here: ", code);

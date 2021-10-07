@@ -341,7 +341,15 @@ export default {
       const el = document.getElementById("results");
       el.innerHTML = `Building results table ...`;
       window.NProgress.start();
-
+      if (
+        this.sqlStatement.match(/insert|delete|drop|update|replace|create/i)
+      ) {
+        console.log("SQL not permitted");
+        this.err = "SQL not permitted";
+        window.NProgress.done();
+        el.innerHTML = ``;
+        return null;
+      }
       const before = Date.now();
 
       try {
